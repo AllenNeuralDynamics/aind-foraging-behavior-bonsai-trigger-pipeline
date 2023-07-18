@@ -105,5 +105,5 @@ if __name__ == '__main__':
     
     # Sync with AWS bucket
     upload_directory_to_s3(source_dir = R"F:\Data_for_ingestion\Foraging_behavior\Bonsai\nwb", 
-                           s3_bucket="aind-behavior-data/bonsai-harp", 
+                           s3_bucket="aind-behavior-data/foraging_nwb_bonsai", 
                            )
