@@ -196,8 +196,8 @@ def bonsai_to_nwb(fname, save_folder=save_folder):
                             bait_left=obj.B_BaitHistory[0][i],
                             bait_right=obj.B_BaitHistory[1][i],
                             base_reward_probability_sum=float(obj.TP_BaseRewardSum[i]),
-                            reward_probabilityL=obj.B_RewardProHistory[0][i],
-                            reward_probabilityR=obj.B_RewardProHistory[1][i],
+                            reward_probabilityL=float(obj.B_RewardProHistory[0][i]),
+                            reward_probabilityR=float(obj.B_RewardProHistory[1][i],
                             left_valve_open_time=float(obj.TP_LeftValue[i]),
                             right_valve_open_time=float(obj.TP_RightValue[i]),
                             block_beta=float(obj.TP_BlockBeta[i]),
@@ -264,8 +264,8 @@ def bonsai_to_nwb(fname, save_folder=save_folder):
     RightRewardDeliveryTime = TimeSeries(
         name="right_reward_delivery_time",
         unit="second",
-        timestamps=np.ones(len(B_RightRewardDeliveryTime)).tolist(),
-        data=B_RightRewardDeliveryTime,
+        timestamps=B_RightRewardDeliveryTime,
+        data=np.ones(len(B_RightRewardDeliveryTime)).tolist(),
         description='The reward delivery time of the right lick port'
     )
     nwbfile.add_acquisition(RightRewardDeliveryTime)
