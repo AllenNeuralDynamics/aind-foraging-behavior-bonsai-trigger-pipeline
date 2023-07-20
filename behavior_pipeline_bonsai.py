@@ -15,9 +15,11 @@ from bonsai_to_nwb import bonsai_to_nwb
 
 #=============================   Change me!!! ===============================
 # Address of remote training rig PCs
+# Solve connection bugs: https://stackoverflow.com/questions/24933661/multiple-connections-to-a-server-or-shared-resource-by-the-same-user-using-more
 rigs = [
     {'local': 'AIND-Tower-5', 'remote': R'\\10.128.41.7\Users\aind_behavior\Documents\BonsaiForaging\Data', 'user_name': 'aind_behavior', 'passcode': 'TraiNINGlab587!'},   
 ]
+
 
 # Root path to place bonsai sessions
 behavioral_root = R'F:\Data_for_ingestion\Foraging_behavior\Bonsai'
@@ -85,7 +87,7 @@ def batch_convert_json_to_nwb(json_dir, nwb_dir):
             except Exception as e:
                 log.error(f'Error converting {filename} to .nwb: {str(e)}')
         else:
-            log.info(f'Already exists {filename}, skipped...')
+            log.info(f'Already exists nwb for {filename}, skipped...')
 
 def upload_directory_to_s3(source_dir, s3_bucket):
     # Create the AWS CLI command
