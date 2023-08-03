@@ -11,9 +11,10 @@ from aind_codeocean_api.codeocean import CodeOceanClient
 BEHAVIOR_PIPELINE_ID = '93b5045b-b77d-4426-97ef-75c22e618798'
 COLLECT_AND_UPLOAD_CAPSULE_ID = '3b851d69-5e4f-4718-b0e5-005ca531aaeb'
 
-co_client = CodeOceanClient(**json.load(open('/root/.codeocean/credentials.json', 'r')))
+co_client = CodeOceanClient(domain=os.getenv('API_KEY'),
+                            token=os.getenv('API_SECRET'))
 
-
+#%%
 def get_nwb_to_process(nwb_folder, nwb_processed_folder):
     # The simplest solution: find nwb files that have not been processed
     nwb = [f_name.split('/')[-1].split('.')[0] for f_name in glob.glob(f'{nwb_folder}/*.nwb')]
