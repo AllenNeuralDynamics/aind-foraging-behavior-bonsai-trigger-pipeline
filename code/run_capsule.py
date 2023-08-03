@@ -1,9 +1,15 @@
 """ top level run script """
 #%%
 import json, os
+import glob
+import time
+from pathlib import Path
+from datetime import datetime
+
 from aind_codeocean_api.codeocean import CodeOceanClient
 
 BEHAVIOR_PIPELINE_ID = '93b5045b-b77d-4426-97ef-75c22e618798'
+COLLECT_AND_UPLOAD_CAPSULE_ID = '3b851d69-5e4f-4718-b0e5-005ca531aaeb'
 
 co_client = CodeOceanClient(**json.load(open('/root/.codeocean/credentials.json', 'r')))
 
@@ -25,18 +31,57 @@ def get_nwb_to_process(nwb_folder, nwb_processed_folder):
 
 
 def run_pipeline():
+
+    # Get nwbs that are not processed
+    nwb_to_process = get_nwb_to_process(nwb_folder, nwb_processed_folder)
+
+    if not len(nwb_to_process):
+        # print(f'{datetime.now()}  No new data...')
+        return 
     
+    print(f'--- {datetime.now()} ---')
+    print(f'Found {len(nwb_to_process)} new nwb files! Trigger computation...')
+    # --- Trigger behavior pipeline HERE !!! ----
+    pipeline_job_id = co_client.run_capsule(capsule_id=BEHAVIOR_PIPELINE_ID,
+                                            data_assets=[]).json()['id']
     
-    return pipeline_job
+    # Wait for the pipeline to finish
+    if_completed = False        
+    while not if_completed:
+        status = co_client.get_computation(computation_id=pipeline_job_id).json()
+        print(status)
+        if_completed = status['state'] == 'completed' and status['has_results'] == True
+        time.sleep(5)
+        
+    print('Computation Done!')
+    
+    if status['end_status'] == 'succeeded':
+        # ---- Register data asset ----
+        result_asset_id = co_client.register_result_as_data_asset(computation_id=pipeline_job_id, 
+                                                asset_name=f'foraging_behavior_bonsai_pipeline_results_{status["name"]}',
+                                                mount='foraging_behavior_bonsai_pipeline_results',
+                                                tags=['foraging', 'behavior', 'bonsai', 'hanhou', 'pipeline_output']).json()['id']
+        
+        # ---- Run foraging_behavior_bonsai_pipeline_collect_and_upload_results ----
+        upload_capsule_id = co_client.run_capsule(capsule_id=COLLECT_AND_UPLOAD_CAPSULE_ID, 
+                                                    data_assets=[dict(id=result_asset_id,
+                                                                    mount='foraging_behavior_bonsai_pipeline_results')]).json()['id']
+        if_completed = False          
+        while not if_completed:
+            status = co_client.get_computation(computation_id=upload_capsule_id).json()
+            print(status)
+            if_completed = status['state'] == 'completed' and status['end_status'] == 'succeeded'
+            time.sleep(5)        
+    
+    print('Upload Done!')
+
 
 if __name__ == "__main__": 
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
-
     nwb_folder = os.path.join(script_dir, '../data/foraging_nwb_bonsai')
     nwb_processed_folder = os.path.join(script_dir, '../data/foraging_nwb_bonsai_processed')
-
-    nwb_to_process = get_nwb_to_process(nwb_folder, nwb_processed_folder)
-
-
-    # run_pipeline()
+    
+    while 1:
+        run_pipeline()
+        time.sleep(10)
