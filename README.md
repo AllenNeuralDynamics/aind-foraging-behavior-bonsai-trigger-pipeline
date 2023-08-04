@@ -23,7 +23,7 @@
 The Streamlit app fetches data from the above S3 bucket and generates data viz. You could run the app either on [Code Ocean](https://codeocean.allenneuraldynamics.org/cw/d4dd4015-ded7-4cab-b7bb-8b1113a5dd86/proxy/8501/Bonsai) (recommended) or on [Streamlit public cloud](https://foraging-behavior-browser.streamlit.app/Bonsai)
 
 ## How to add more rigs
-- On the rig PC, share the data folder to the local network in Windows.
+- On the rig PC, share the data folder on the network.
 - Let me know the IP address, path to the data folder, and Windows credentials. I will create a new entry [here](https://github.com/hanhou/code_cache/blob/51485cf3609fa49902a78e404c1f1b60837467e6/sync_bonsai/behavior_pipeline_bonsai.py#L19-L21).
 
 ## How to add more analyses
