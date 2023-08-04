@@ -37,4 +37,4 @@ If you would like to access the .nwb files directly or do analysis outside Code 
 
 
 ## What's next
-We will likely be refactoring the pipeline after we figure out the AIND behavior metadata schema, but the core ideas and code developed here will remain. Stay tuned.
+We will likely be refactoring the pipeline after we figure out the AIND behavior metadata schema, but the core ideas and data analysis code developed here will remain. Stay tuned.
