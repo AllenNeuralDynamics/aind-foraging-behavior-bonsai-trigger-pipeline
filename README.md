@@ -27,7 +27,7 @@ The Streamlit app fetches data from the above S3 bucket and generates data viz. 
 - Let me know the IP address, path to the data folder, and Windows credentials. I will create a new entry [here](https://github.com/hanhou/code_cache/blob/51485cf3609fa49902a78e404c1f1b60837467e6/sync_bonsai/behavior_pipeline_bonsai.py#L19-L21).
 
 ## How to add more analyses
-The pipeline is still a backbone at this moment. As you can see in the [Streamlit app](https://foraging-behavior-browser.streamlit.app/Bonsai), so far I only implemented [two basic analyses](https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-basic/blob/e740865cf7c5ed9c649147156d8b2afada714249/code/process_nwbs.py#L181-L195): 
+The pipeline is still a prototype at this moment. As you can see in the [Streamlit app](https://foraging-behavior-browser.streamlit.app/Bonsai), so far I only implemented [two basic analyses](https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-basic/blob/e740865cf7c5ed9c649147156d8b2afada714249/code/process_nwbs.py#L181-L195): 
 - compute essential session-wise stats
 - generate a simple plot of choice-reward history
   
