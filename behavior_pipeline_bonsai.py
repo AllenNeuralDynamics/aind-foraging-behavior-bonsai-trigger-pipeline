@@ -17,7 +17,20 @@ from bonsai_to_nwb import bonsai_to_nwb
 # Address of remote training rig PCs
 # Solve connection bugs: https://stackoverflow.com/questions/24933661/multiple-connections-to-a-server-or-shared-resource-by-the-same-user-using-more
 rigs = [
-    {'local': 'AIND-Tower-5', 'remote': R'\\10.128.41.7\Users\aind_behavior\Documents\BonsaiForaging\Data', 'user_name': 'aind_behavior', 'passcode': 'TraiNINGlab587!'},   
+    {'local': 'AIND-Tower-5', 'remote': R'\\10.128.41.7\Users\aind_behavior\Documents\BonsaiForaging\Data', 'user_name': 'aind_behavior', 'passcode': 'TraiNINGlab587!'},
+    
+    # New rigs in Rm 447
+    *[{'local': fR'AIND-447-B{rig}', 'remote': fR'\\LUKWATA\Users\svc_aind_behavior\Documents\BehaviorData\Blue-{rig}', 
+       'user_name': 'svc_aind_behavior', 
+       'passcode': '@ind-Beeh@ve'} for rig in (1, 2, 3, 4)],   
+
+    *[{'local': fR'AIND-447-G{rig}', 'remote': fR'\\CHARYBDIS\Users\SVC_aind_behavior\Documents\BehaviorData\Green-{rig}', 
+       'user_name': 'svc_aind_behavior', 
+       'passcode': '@ind-Beeh@ve'} for rig in (1, 2, 3, 4)],   
+    
+    *[{'local': fR'AIND-447-R{rig}', 'remote': fR'\\ADARO\Users\SVC_aind_behavior\Documents\BehaviorData\Red-{rig}', 
+       'user_name': 'svc_aind_behavior', 
+       'passcode': '@ind-Beeh@ve'} for rig in (1, 2, 3, 4)],   
 ]
 
 
