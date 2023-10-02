@@ -24,13 +24,22 @@ rigs = [
        'user_name': 'svc_aind_behavior', 
        'passcode': '@ind-Beeh@ve'} for rig in (1, 2, 3, 4)],   
 
+    *[{'local': fR'AIND-447-G{rig}', 'remote': fR'\\OGOPOGO\Users\SVC_aind_behavior\Documents\BehaviorData\Green-{rig}', 
+       'user_name': 'svc_aind_behavior', 
+       'passcode': '@ind-Beeh@ve'} for rig in (1, 2)],       
+    
     *[{'local': fR'AIND-447-G{rig}', 'remote': fR'\\CHARYBDIS\Users\SVC_aind_behavior\Documents\BehaviorData\Green-{rig}', 
        'user_name': 'svc_aind_behavior', 
-       'passcode': '@ind-Beeh@ve'} for rig in (1, 2, 3, 4)],   
+       'passcode': '@ind-Beeh@ve'} for rig in (3, 4)],   
+    
+    *[{'local': fR'AIND-447-R{rig}', 'remote': fR'\\BUNYIP\Users\SVC_aind_behavior\Documents\BehaviorData\Red-{rig}', 
+       'user_name': 'svc_aind_behavior', 
+       'passcode': '@ind-Beeh@ve'} for rig in (1, 2)],      
     
     *[{'local': fR'AIND-447-R{rig}', 'remote': fR'\\ADARO\Users\SVC_aind_behavior\Documents\BehaviorData\Red-{rig}', 
        'user_name': 'svc_aind_behavior', 
-       'passcode': '@ind-Beeh@ve'} for rig in (1, 2, 3, 4)],   
+       'passcode': '@ind-Beeh@ve'} for rig in (3, 4)],   
+    
 ]
 
 
