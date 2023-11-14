@@ -15,10 +15,27 @@ co_client = CodeOceanClient(domain=os.getenv('API_KEY'),
                             token=os.getenv('API_SECRET'))
 
 #%%
+def _reformat_string(s):
+    if s.count('_') < 2:  # No suffix
+        return s
+    subject_date, time_part = s.rsplit('_', 1)
+    
+    if len(time_part) < 5:  # Old suffix (0, 1, 2, ...)
+        return s
+    
+    time_part = time_part.zfill(6)
+    formatted_time = f'{time_part[:2]}-{time_part[2:4]}-{time_part[4:6]}'
+    return f'{subject_date}_{formatted_time}'
+
+
 def get_nwb_to_process(nwb_folder, nwb_processed_folder):
     # The simplest solution: find nwb files that have not been processed
     nwb = [f_name.split('/')[-1].split('.')[0] for f_name in glob.glob(f'{nwb_folder}/*.nwb')]
     nwb_processed = [f_name.split('/')[-1].split('.')[0] for f_name in glob.glob(f'{nwb_processed_folder}/*')]
+    
+    # Per this issue https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-basic/issues/1, 
+    # I have to revert the processed file name back to json name, e.g.: 'xxxxx_2023-11-08_92908' to 'xxxxx_2023-11-08_09-29-08'
+    nwb_processed = [_reformat_string(s) for s in nwb_processed]
 
     f_error = f'{nwb_processed_folder}/error_files.json'
     if Path(f_error).exists():
