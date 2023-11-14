@@ -13,7 +13,7 @@
    - Upload all .nwb files to a single S3 bucket `s3://aind-behavior-data/foraging_nwb_bonsai/`
      
 #### 2. (In Code Ocean, this repo) Trigger computation ([`CO capsule: foraging_behavior_bonsai_pipeline_trigger`](https://codeocean.allenneuraldynamics.org/capsule/9148690/), [github](https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-trigger-pipeline/blob/main/code/run_capsule.py))
-   - Identify unprocessed .nwb files ([github](https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-trigger-pipeline/blob/945ff92d98b8759668ff7c37c823af6c49273e20/code/run_capsule.py#L18-L31))
+   - Identify unprocessed .nwb files ([github](https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-trigger-pipeline/blob/c456dcf9bb5f37fc6c836b3a6a53f3c311aa4369/code/run_capsule.py#L31-L48))
    - Send unprocessed .nwb files to [`CO pipeline: Han_pipeline_foraging_behavior_bonsai`](https://codeocean.allenneuraldynamics.org/capsule/8633725/tree).<br>
    In the CO pipeline:
      - Distribute .nwb files to parallel workers ([`CO capsule: foraging_behavior_bonsai_pipeline_assign_job`](https://codeocean.allenneuraldynamics.org/capsule/0827783/tree), [github](https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-assign-job))
@@ -22,7 +22,7 @@
    - Upload results to this S3 bucket `s3://aind-behavior-data/foraging_nwb_bonsai_processed/`
 
 #### 3. (In Code Ocean) Visualization by Streamlit app ([`CO capsule: foraging-behavior-browser`](https://codeocean.allenneuraldynamics.org/capsule/3373065/), [github](https://github.com/AllenNeuralDynamics/foraging-behavior-browser))
-The Streamlit app fetches data from the above S3 bucket and generates data viz. You could run the app either on [Code Ocean](https://codeocean.allenneuraldynamics.org/cw/d4dd4015-ded7-4cab-b7bb-8b1113a5dd86/proxy/8501/Bonsai) (recommended) or on [Streamlit public cloud](https://foraging-behavior-browser.streamlit.app/Bonsai)
+The Streamlit app fetches data from the above S3 bucket and generates data viz. You could run the app either on [Code Ocean](https://codeocean.allenneuraldynamics.org/cw/7e61a19e-a85f-479e-9b78-66deda84086f/proxy/8501/Bonsai) (recommended) or on [Streamlit public cloud](https://foraging-behavior-browser.streamlit.app/Bonsai)
 
 ## Automatic training
 We've been working on implementing automatic training using this pipeline. See [this issue](https://github.com/AllenNeuralDynamics/aind-behavior-blog/issues/73)
