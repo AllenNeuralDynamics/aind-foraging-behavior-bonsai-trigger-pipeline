@@ -45,6 +45,7 @@ rigs = [
 
 # Root path to place bonsai sessions
 behavioral_root = R'F:\Data_for_ingestion\Foraging_behavior\Bonsai'
+to_exclude_folders = f'"0000" "test" "EphysFolder" "HarpFolder" "PhotometryFolder" "VideoFolder"'  # Exclude these folders from syncing
 
 # Pipeline log
 pipeline_log = R'F:\Data_for_ingestion\Foraging_behavior\Bonsai\bonsai_pipeline.log'  # Simplified log for this code
@@ -65,7 +66,7 @@ def sync_behavioral_folders():
     for rig in rigs:
         summary_start = False
         command = fR'''net use {rig['remote']} /u:{rig['user_name']} {rig['passcode']}&&'''\
-                  fR'''robocopy  {rig['remote']} {behavioral_root}\{rig['local']} /e /xx /XD "0000" "test" /xj /xjd /mt /np /Z /W:1 /R:5 /tee /fft &&'''\
+                  fR'''robocopy  {rig['remote']} {behavioral_root}\{rig['local']} /e /xx /XD {to_exclude_folders} /xj /xjd /mt /np /Z /W:1 /R:5 /tee /fft &&'''\
                   fR'''net use {rig['remote']} /d'''         
                    ##fR'''net use {rig['remote']} /u:{rig['user_name']} {rig['passcode']}&&'''\          
                 
