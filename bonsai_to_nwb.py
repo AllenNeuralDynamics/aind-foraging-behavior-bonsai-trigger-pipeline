@@ -77,7 +77,7 @@ def bonsai_to_nwb(fname, save_folder=save_folder):
     # need to get more subject information through subject_id
     nwbfile.subject = Subject(
         subject_id=obj.ID,
-        description='Animal name:'+obj.AnimalName+'  Weight after(g):'+obj.WeightAfter,
+        description='Animal name:'+obj.ID+'  Weight after(g):'+obj.WeightAfter,
         species="Mus musculus",
         weight=obj.WeightBefore,
     )
