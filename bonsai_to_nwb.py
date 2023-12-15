@@ -185,6 +185,11 @@ def bonsai_to_nwb(fname, save_folder=save_folder):
                 LaserFrequencyC=eval('obj.TP_Frequency_'+str(Sc)+'[i]')
                 LaserRampingDownC=eval('obj.TP_RD_'+str(Sc)+'[i]')
                 LaserPulseDurC=eval('obj.TP_PulseDur_'+str(Sc)+'[i]')
+                
+        if Harp=='':
+            goCue_start_time_t=eval('obj.B_GoCueTime'+'[i]')
+        else:
+            goCue_start_time_t=eval('obj.B_GoCueTimeSoundCard'+'[i]')
         nwbfile.add_trial(start_time=eval('obj.B_TrialStartTime'+Harp+'[i]'), 
                             stop_time=eval('obj.B_TrialEndTime'+Harp+'[i]'),
                             animal_response=obj.B_AnimalResponseHistory[i],
@@ -192,7 +197,7 @@ def bonsai_to_nwb(fname, save_folder=save_folder):
                             rewarded_historyR=obj.B_RewardedHistory[1][i],
                             reward_outcome_time=obj.B_RewardOutcomeTime[i],
                             delay_start_time=eval('obj.B_DelayStartTime'+Harp+'[i]'),
-                            goCue_start_time=eval('obj.B_GoCueTime'+Harp+'[i]'),
+                            goCue_start_time=goCue_start_time_t,
                             bait_left=obj.B_BaitHistory[0][i],
                             bait_right=obj.B_BaitHistory[1][i],
                             base_reward_probability_sum=float(obj.TP_BaseRewardSum[i]),
