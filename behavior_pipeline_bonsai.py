@@ -30,29 +30,31 @@ def get_passcode(rigs):
 # Address of remote training rig PCs
 # Solve connection bugs: https://stackoverflow.com/questions/24933661/multiple-connections-to-a-server-or-shared-resource-by-the-same-user-using-more
 rigs = [
-    {'local': 'AIND-Tower-5', 'remote': R'\\10.128.41.7\Users\aind_behavior\Documents\BonsaiForaging\Data', 'user_name': 'aind_behavior'},
-    
-    # New rigs in Rm 447
-    *[{'local': fR'AIND-447-B{rig}', 'remote': fR'\\LUKWATA\Users\svc_aind_behavior\Documents\BehaviorData\Blue-{rig}', 
+   
+    # New boxs in Rm 447
+    *[{'local': fR'AIND-447-1-{box}', 'remote': fR'\\W10DT714033\behavior_data\447-1-{box}', 
        'user_name': 'svc_aind_behavior', 
-      } for rig in (1, 2, 3, 4)],   
+      } for box in ('A', 'B')],   
 
-    *[{'local': fR'AIND-447-G{rig}', 'remote': fR'\\OGOPOGO\Users\SVC_aind_behavior\Documents\BehaviorData\Green-{rig}', 
+    *[{'local': fR'AIND-447-1-{box}', 'remote': fR'\\W10DT714086\behavior_data\447-1-{box}', 
        'user_name': 'svc_aind_behavior', 
-       } for rig in (1, 2)],       
+       } for box in ('C', 'D')],       
     
-    *[{'local': fR'AIND-447-G{rig}', 'remote': fR'\\CHARYBDIS\Users\SVC_aind_behavior\Documents\BehaviorData\Green-{rig}', 
+    *[{'local': fR'AIND-447-2-{box}', 'remote': fR'\\W10DT714084\behavior_data\447-2-{box}', 
        'user_name': 'svc_aind_behavior', 
-       } for rig in (3, 4)],   
+       } for box in ('A', 'B')],   
     
-    *[{'local': fR'AIND-447-R{rig}', 'remote': fR'\\BUNYIP\Users\SVC_aind_behavior\Documents\BehaviorData\Red-{rig}', 
+    *[{'local': fR'AIND-447-2-{box}', 'remote': fR'\\W10DT714027\behavior_data\447-2-{box}', 
        'user_name': 'svc_aind_behavior', 
-       } for rig in (1, 2)],      
+       } for box in ('C', 'D')],
     
-    *[{'local': fR'AIND-447-R{rig}', 'remote': fR'\\ADARO\Users\SVC_aind_behavior\Documents\BehaviorData\Red-{rig}', 
+    *[{'local': fR'AIND-447-3-{box}', 'remote': fR'\\W10DT714028\behavior_data\447-3-{box}', 
        'user_name': 'svc_aind_behavior', 
-       } for rig in (3, 4)],   
-    
+       } for box in ('A', 'B')],
+
+    *[{'local': fR'AIND-447-3-{box}', 'remote': fR'\\W10DT714030\behavior_data\447-3-{box}', 
+       'user_name': 'svc_aind_behavior', 
+       } for box in ('C', 'D')],    
 ]
 
 get_passcode(rigs)
@@ -79,11 +81,14 @@ log.info('----------------------------------------------------------------------
 
 
 def sync_behavioral_folders():
+    
+    subprocess.Popen('net use * /delete /yes', shell=True).wait()  # Disconnect all network drives
+    
     for rig in rigs:
         summary_start = False
-        command = fR'''net use {rig['remote']} /u:{rig['user_name']} {rig['passcode']}&&'''\
-                  fR'''robocopy  {rig['remote']} {behavioral_root}\{rig['local']} /e /xx /XD {to_exclude_folders} /xj /xjd /mt /np /Z /W:1 /R:5 /tee /fft &&'''\
-                  fR'''net use {rig['remote']} /d'''         
+        command = fR'''net use {rig['remote']} /u:{rig['user_name']} {rig['passcode']} &&'''\
+                  fR'''robocopy  {rig['remote']} {behavioral_root}\{rig['local']} /e /xx /XD {to_exclude_folders} /xj /xjd /mt /np /Z /W:1 /R:5 /tee /fft'''
+                #   fR'''net use {rig['remote']} /d /y'''         
                    ##fR'''net use {rig['remote']} /u:{rig['user_name']} {rig['passcode']}&&'''\          
                 
         log.info('')
