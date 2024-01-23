@@ -12,7 +12,7 @@ import glob
 import os
 import json
 
-from bonsai_to_nwb import bonsai_to_nwb
+from foraging_gui.TransferToNWB import bonsai_to_nwb
 
 #%%
 def get_passcode(rigs):
@@ -116,6 +116,7 @@ def sync_behavioral_folders():
 def batch_convert_json_to_nwb(json_dir, nwb_dir):
     
     os.makedirs(nwb_dir, exist_ok=True)
+    skipped = 0
     
     # Walk through all .json files in the directory including sub-directories
     for filepath in glob.iglob(json_dir + '/**/*.json', recursive=True):
@@ -131,7 +132,9 @@ def batch_convert_json_to_nwb(json_dir, nwb_dir):
             except Exception as e:
                 log.error(f'Error converting {filename} to .nwb: {str(e)}')
         else:
-            log.info(f'Already exists nwb for {filename}, skipped...')
+            skipped += 1
+    
+    log.info(f'Already exists nwb for {skipped} files, skipped them all...')
 
 def upload_directory_to_s3(source_dir, s3_bucket):
     # Create the AWS CLI command
