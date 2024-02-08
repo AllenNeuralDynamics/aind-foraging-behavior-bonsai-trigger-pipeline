@@ -1,7 +1,7 @@
 # Foraging Behavior Pipeline for Bonsai
 (Han Hou @ Aug 2023)
 
-***This is still a temporary workaround until AIND behavior metadata schema is implemented.***
+***This is still a temporary workaround until AIND behavior pipeline is implemented.***
 
 ## Pipeline structure
 
@@ -22,7 +22,7 @@
    - Upload results to this S3 bucket `s3://aind-behavior-data/foraging_nwb_bonsai_processed/`
 
 #### 3. (In Code Ocean) Visualization by Streamlit app ([`CO capsule: foraging-behavior-browser`](https://codeocean.allenneuraldynamics.org/capsule/3373065/), [github](https://github.com/AllenNeuralDynamics/foraging-behavior-browser))
-The Streamlit app fetches data from the above S3 bucket and generates data viz. You could run the app either on [Code Ocean](https://codeocean.allenneuraldynamics.org/cw/7e61a19e-a85f-479e-9b78-66deda84086f/proxy/8501/Bonsai) (recommended) or on [Streamlit public cloud](https://foraging-behavior-browser.streamlit.app/Bonsai)
+The Streamlit app fetches data from the above S3 bucket and generates data viz. You could run the app either on [Code Ocean](https://codeocean.allenneuraldynamics.org/cw/4eb53fe0-a03c-42bb-8c94-add41e78ba8d/proxy/8501/) (recommended) or on [Streamlit public cloud](https://foraging-behavior-browser.streamlit.app/Bonsai)
 
 ## Automatic training
 See [this repo](https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-automatic-training)
