@@ -26,6 +26,9 @@ def ssh_command(ip, port, user, passwd, cmds):
     try:
         client.connect(ip, port=port, username=user, password=passwd)
         
+        # Note that in order to run commands in conda environment, 
+        # all commands must be concatenated together with '&&'
+        # because conda environment does not seem to be persistent across commands.
         stdin, stdout, stderr = client.exec_command(' && '.join(cmds))
         print(stdout.read().decode())
         print(stderr.read().decode())
