@@ -142,14 +142,15 @@ def batch_convert_json_to_nwb(json_dir, nwb_dir):
     os.makedirs(nwb_dir, exist_ok=True)
     
     # Start a multiprocessing pool, and use the pool to convert all .json files to .nwb
-    with mp.Pool(processes=mp.cpu_count()) as pool:
+    with mp.Pool(processes=mp.cpu_count()-1) as pool:
         jobs = [pool.apply_async(convert_one_json_to_nwb, (filepath, nwb_dir)) 
                 for filepath in glob.iglob(json_dir + '/**/*.json', recursive=True)]
         results = [job.get() for job in jobs]
         
-    log.info(f'Processed {len(results)} files: {results.count("done")} converted, '
-        f'{results.count("skipped")} skipped, {results.count("exists")} exists, '
-        f'{results.count("error")} error')
+    log.info(f'Processed {len(results)} files: '
+             f'{results.count("exists")} already exists, '
+             f'{results.count("done")} converted, '             
+             f'{results.count("error")} error')
     
 
 def upload_directory_to_s3(source_dir, s3_bucket):
