@@ -81,7 +81,6 @@ logging.basicConfig(# filename=pipeline_log,
                     handlers=[logging.StreamHandler(), logging.FileHandler(pipeline_log)])
 
 log = logging.getLogger(__name__)
-log.info('------------------------------------------------------------------------')
 
 
 def sync_behavioral_folders():
@@ -162,6 +161,8 @@ def upload_directory_to_s3(source_dir, s3_bucket):
     
                 
 if __name__ == '__main__':
+    
+    log.info(f'\n\n=====================================================================')
     
     # Copy behavioral folders from remote PCs to local
     sync_behavioral_folders()
