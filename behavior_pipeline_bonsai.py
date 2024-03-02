@@ -126,6 +126,11 @@ def batch_convert_json_to_nwb(json_dir, nwb_dir):
         filename = os.path.basename(filepath)
         nwb_filename = filename.replace('.json', '.nwb')
 
+        # Skip if name start with 0
+        if filename.startswith('0'):
+            log.info(f'Skipped {filename}')
+            continue
+        
         # Check if corresponding .nwb file exists
         if not os.path.exists(os.path.join(nwb_dir, nwb_filename)):
             try:
