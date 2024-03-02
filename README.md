@@ -40,5 +40,11 @@ To add more analyses to the pipeline, just plug in your own function [here](http
 
 If you would like to access the .nwb files directly or do analysis outside Code Ocean (not recommended though), check out this bucket `s3://aind-behavior-data/foraging_nwb_bonsai/`
 
+## Notes on updating .nwb or updating analysis
+1. Stop the triggering capsule
+2. Backup nwb folder on my PC and S3
+   - On S3, move the old folder to `\backup` and create a new `foraging_nwb_bonsai`
+3. Backup nwb_processing
+
 ## What's next
 We will likely be refactoring the pipeline after we figure out the AIND behavior metadata schema, but the core ideas and data analysis code developed here will remain. Stay tuned.
