@@ -69,7 +69,7 @@ behavioral_root = R'F:\Data_for_ingestion\Foraging_behavior\Bonsai'
 to_exclude_folders = f'"0000" "test" "EphysFolder" "HarpFolder" "PhotometryFolder" "VideoFolder"'  # Exclude these folders from syncing
 
 # Pipeline log
-pipeline_log = R'F:\Data_for_ingestion\Foraging_behavior\Bonsai\bonsai_pipeline.log'  # Simplified log for this code
+pipeline_log = R'F:\Data_for_ingestion\Foraging_behavior\Bonsai\nwb\bonsai_pipeline.log'  # Simplified log for this code
 #==========================================================================
 
 logging.basicConfig(# filename=pipeline_log, 
