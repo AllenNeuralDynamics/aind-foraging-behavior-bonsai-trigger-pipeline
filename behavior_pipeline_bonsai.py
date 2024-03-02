@@ -14,6 +14,9 @@ import json
 
 from foraging_gui.TransferToNWB import bonsai_to_nwb
 
+import warnings
+warnings.simplefilter('ignore', FutureWarning)
+
 #%%
 def get_passcode(rigs):
     ''' Get passcode for remote PCs from json
@@ -128,9 +131,8 @@ def batch_convert_json_to_nwb(json_dir, nwb_dir):
             try:
                 # Convert .json to .nwb
                 bonsai_to_nwb(filepath, nwb_dir)
-                log.info(f'Successfully converted {filename} to .nwb')
             except Exception as e:
-                log.error(f'Error converting {filename} to .nwb: {str(e)}')
+                log.error(f'Error converting {filepath} to .nwb: {str(e)}')
         else:
             skipped += 1
     
