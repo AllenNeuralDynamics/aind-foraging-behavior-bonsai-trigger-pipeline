@@ -11,6 +11,7 @@ import logging
 import glob
 import os
 import json
+import multiprocessing as mp
 
 from foraging_gui.TransferToNWB import bonsai_to_nwb
 
@@ -115,33 +116,41 @@ def sync_behavioral_folders():
         exitcode = proc.wait() # Essential for robocopy
         log.info(f'Done with exitcode = {exitcode}\n')
         
+def convert_one_json_to_nwb(filepath, nwb_dir):
+    filename = os.path.basename(filepath)
+    nwb_filename = filename.replace('.json', '.nwb')
+
+    # Skip if name start with 0
+    if filename.startswith('0'):
+        log.info(f'Skipped {filename}')
+        return 'skipped'
+    
+    # Check if corresponding .nwb file exists
+    if not os.path.exists(os.path.join(nwb_dir, nwb_filename)):
+        try:
+            # Convert .json to .nwb
+            bonsai_to_nwb(filepath, nwb_dir)
+            return 'done'
+        except Exception as e:
+            log.error(f'Error converting {filepath} to .nwb: {str(e)}')
+            return 'error'
+    else:
+        return 'exists'
+
         
 def batch_convert_json_to_nwb(json_dir, nwb_dir):
-    
     os.makedirs(nwb_dir, exist_ok=True)
-    skipped = 0
     
-    # Walk through all .json files in the directory including sub-directories
-    for filepath in glob.iglob(json_dir + '/**/*.json', recursive=True):
-        filename = os.path.basename(filepath)
-        nwb_filename = filename.replace('.json', '.nwb')
-
-        # Skip if name start with 0
-        if filename.startswith('0'):
-            log.info(f'Skipped {filename}')
-            continue
+    # Start a multiprocessing pool, and use the pool to convert all .json files to .nwb
+    with mp.Pool(processes=mp.cpu_count()) as pool:
+        jobs = [pool.apply_async(convert_one_json_to_nwb, (filepath, nwb_dir)) 
+                for filepath in glob.iglob(json_dir + '/**/*.json', recursive=True)]
+        results = [job.get() for job in jobs]
         
-        # Check if corresponding .nwb file exists
-        if not os.path.exists(os.path.join(nwb_dir, nwb_filename)):
-            try:
-                # Convert .json to .nwb
-                bonsai_to_nwb(filepath, nwb_dir)
-            except Exception as e:
-                log.error(f'Error converting {filepath} to .nwb: {str(e)}')
-        else:
-            skipped += 1
+    log.info(f'Processed {len(results)} files: {results.count("done")} converted, '
+        f'{results.count("skipped")} skipped, {results.count("exists")} exists, '
+        f'{results.count("error")} error')
     
-    log.info(f'Already exists nwb for {skipped} files, skipped them all...')
 
 def upload_directory_to_s3(source_dir, s3_bucket):
     # Create the AWS CLI command
