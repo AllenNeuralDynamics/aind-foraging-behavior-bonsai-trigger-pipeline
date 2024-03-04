@@ -40,16 +40,30 @@ To add more analyses to the pipeline, just plug in your own function [here](http
 
 If you would like to access the .nwb files directly or do analysis outside Code Ocean (not recommended though), check out this bucket `s3://aind-behavior-data/foraging_nwb_bonsai/`
 
+## Pipeline-ready checklist
+Checklist before the pipeline is ready to run:
+1. `Han_pipeline_foraging_behavior_bonsai`:
+    - No yellow warning sign (otherwise, do a `Reproducible Run` of that capsule first)
+    - Check the argument of `foraging_behavior_bonsai_pipeline_assign_job` that controls the number of capsule instances
+    - Check the argument of `foraging_behavior_bonsai_nwb` that controls the number of multiprocessing cores of each instance.
+       - This number should match the core number of "Adjust Resources for capsule in pipeline"
+2. Make sure these capsules are not running (`Status` is four gray dots; VSCode are held or terminated)
+   - `foraging_behavior_bonsai_pipeline_assign_job`
+   - `foraging_behavior_bonsai_nwb`
+   - `foraging_behavior_bonsai_pipeline_collect_and_upload_results`
+3. Make sure `foraging_behavior_bonsai_pipeline_trigger` is running.
+
 ## Notes on updating .nwb or updating analysis
 1. Stop the triggering capsule
 2. Backup nwb folder on my PC and S3
    - On S3, move the old folder to `\backup` and create a new `foraging_nwb_bonsai`
-3. Backup nwb_processing
+3. Backup nwb_processing folder and clear it on S3
    - Troubleshooting: when attaching a S3 folder to a capsule, the folder must not be empty (otherwise a "permission denied" error)
+   - **If you don't clear it, at least you should delete `df_sessions.pkl`, `error_files.json`, and `pipeline.log` (they will be appended, not overwritten)**
 4. Manually trigger the batch computation in capsule `foraging_behavior_bonsai_nwb`:
    - Make sure the CPU number of the environment is 16 or more :)
    - Run `processing_nwb.py` manually in parallel (with `LOCAL_MANUAL_OVERRIDE = True`)
-6. Manually trigger the collect_and_upload capsule:
+5. Manually trigger the collect_and_upload capsule:
    - Manually register a data asset:
       - Use any name, but `mount` must be `data/foraging_behavior_bonsai_pipeline_results`
       - The data asset cannot be registered in VSCode?? @20240303 I can only create data asset outside VSCode.
