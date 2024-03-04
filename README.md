@@ -52,7 +52,7 @@ If you would like to access the .nwb files directly or do analysis outside Code 
 6. Manually trigger the collect_and_upload capsule:
    - Manually register a data asset:
       - Use any name, but `mount` must be `data/foraging_behavior_bonsai_pipeline_results`
-      - The data asset cannot be registered in VSCode?? @20240303 I can only create 
+      - The data asset cannot be registered in VSCode?? @20240303 I can only create data asset outside VSCode.
    - In the capsule `collect_and_upload_restuls`, manually attach the data asset just created, and press `Reproducible Run`.
       - I have adapted `collect_and_upload_restuls` so that it can also accept data that are not in /1, /2, ... like those from the pipeline run.
 
