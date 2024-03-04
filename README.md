@@ -40,5 +40,21 @@ To add more analyses to the pipeline, just plug in your own function [here](http
 
 If you would like to access the .nwb files directly or do analysis outside Code Ocean (not recommended though), check out this bucket `s3://aind-behavior-data/foraging_nwb_bonsai/`
 
+## Notes on updating .nwb or updating analysis
+1. Stop the triggering capsule
+2. Backup nwb folder on my PC and S3
+   - On S3, move the old folder to `\backup` and create a new `foraging_nwb_bonsai`
+3. Backup nwb_processing
+   - Troubleshooting: when attaching a S3 folder to a capsule, the folder must not be empty (otherwise a "permission denied" error)
+4. Manually trigger the batch computation in capsule `foraging_behavior_bonsai_nwb`:
+   - Set CPU number = 16 or more
+   - Run `processing_nwb.py` manually in parallel
+5. Manually trigger the collect_and_upload capsule:
+   - Manually register a data asset:
+      - Use any name, but `mount` must be `data/foraging_behavior_bonsai_pipeline_results`
+      - The data asset cannot be registered in VSCode?? @20240303 I can only create 
+   - In the capsule `collect_and_upload_restuls`, manually attach the data asset just created, and press `Reproducible Run`.
+      - I have adapted `collect_and_upload_restuls` so that it can also accept data that are not in /1, /2, ... like those from the pipeline run.
+
 ## What's next
 We will likely be refactoring the pipeline after we figure out the AIND behavior metadata schema, but the core ideas and data analysis code developed here will remain. Stay tuned.
