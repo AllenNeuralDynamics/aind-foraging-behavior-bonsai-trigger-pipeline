@@ -51,15 +51,20 @@ Checklist before the pipeline is ready to run:
    - `foraging_behavior_bonsai_pipeline_assign_job`
    - `foraging_behavior_bonsai_nwb`
    - `foraging_behavior_bonsai_pipeline_collect_and_upload_results`
-3. Make sure `foraging_behavior_bonsai_pipeline_trigger` is running.
+3. Make sure ***one and only one instance*** of `foraging_behavior_bonsai_pipeline_trigger` is running.
+4. Make sure ***one and only one instance*** of `foraging-behavior-bonsai-automatic-training` is running.
 
-## Notes on updating .nwb or updating analysis
+## Notes on manually re-process all nwbs and upload S3 database
 1. Stop the triggering capsule
-2. Backup nwb folder on my PC and S3
-   - On S3, move the old folder to `\backup` and create a new `foraging_nwb_bonsai`
-3. Backup nwb_processing folder and clear it on S3
-   - Troubleshooting: when attaching a S3 folder to a capsule, the folder must not be empty (otherwise a "permission denied" error)
-   - **If you don't clear it, at least you should delete `df_sessions.pkl`, `error_files.json`, and `pipeline.log` (they will be appended, not overwritten)**
+2. (optional) Re-generate all nwbs
+   - Backup nwb folder on my PC and S3
+   - On S3, move the old `/foraging_nwb_bonsai` to a backup folder and create a new `/foraging_nwb_bonsai`
+   - Re-generate nwbs from jsons on my PC
+3. Backup and clear `/foraging_nwb_bonsai_processed` bucket
+   - On S3, copy the folder to a backup folder
+   - Clear the old folder
+      - **If you don't clear it, at least you should delete `df_sessions.pkl`, `error_files.json`, and `pipeline.log` (they will be appended, not overwritten)**
+      - Troubleshooting: when attaching a S3 folder to a capsule, the folder must not be empty (otherwise a "permission denied" error)
 4. Manually trigger the batch computation in capsule `foraging_behavior_bonsai_nwb`:
    - Make sure the CPU number of the environment is 16 or more :)
    - Run `processing_nwb.py` manually in parallel (with `LOCAL_MANUAL_OVERRIDE = True`)
@@ -69,6 +74,7 @@ Checklist before the pipeline is ready to run:
       - The data asset cannot be registered in VSCode?? @20240303 I can only create data asset outside VSCode.
    - In the capsule `collect_and_upload_restuls`, manually attach the data asset just created, and press `Reproducible Run`.
       - I have adapted `collect_and_upload_restuls` so that it can also accept data that are not in /1, /2, ... like those from the pipeline run.
+6. To restore the pipeline, follow above "Pipeline-ready checklist"
 
 ## What's next
 We will likely be refactoring the pipeline after we figure out the AIND behavior metadata schema, but the core ideas and data analysis code developed here will remain. Stay tuned.
