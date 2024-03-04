@@ -51,9 +51,9 @@ If you would like to access the .nwb files directly or do analysis outside Code 
    - Run `processing_nwb.py` manually in parallel
 5. Manually trigger the collect_and_upload capsule:
    - Manually register a data asset:
-      - Use any name, but `mount` must be `data/foraging_behavior_bonsai_pipeline_results`
-      - The data asset cannot be registered in VSCode?? @20240303 I can only create
-   - Run `manual
+      - Use any name, but `mount` must be `data/foraging_behavior_bonsai_pipeline_results/1` (Note the last 1)
+      - The data asset cannot be registered in VSCode?? @20240303 I can only create 
+   - In the capsule `collect_and_upload_restuls`, manually attach the data asset just created, and press `Reproducible Run`.
 
 ## What's next
 We will likely be refactoring the pipeline after we figure out the AIND behavior metadata schema, but the core ideas and data analysis code developed here will remain. Stay tuned.
