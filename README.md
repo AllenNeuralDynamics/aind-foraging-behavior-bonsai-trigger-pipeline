@@ -47,9 +47,9 @@ If you would like to access the .nwb files directly or do analysis outside Code 
 3. Backup nwb_processing
    - Troubleshooting: when attaching a S3 folder to a capsule, the folder must not be empty (otherwise a "permission denied" error)
 4. Manually trigger the batch computation in capsule `foraging_behavior_bonsai_nwb`:
-   - Set CPU number = 16 or more
-   - Run `processing_nwb.py` manually in parallel
-5. Manually trigger the collect_and_upload capsule:
+   - Make sure the CPU number of the environment is 16 or more :)
+   - Run `processing_nwb.py` manually in parallel (with `LOCAL_MANUAL_OVERRIDE = True`)
+6. Manually trigger the collect_and_upload capsule:
    - Manually register a data asset:
       - Use any name, but `mount` must be `data/foraging_behavior_bonsai_pipeline_results`
       - The data asset cannot be registered in VSCode?? @20240303 I can only create 
