@@ -38,7 +38,7 @@ The pipeline is still a prototype at this moment. As you can see in the [Streaml
   
 To add more analyses to the pipeline, just plug in your own function [here](https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-basic/blob/e740865cf7c5ed9c649147156d8b2afada714249/code/process_nwbs.py#L181-L195). Your function should take `nwb` as an input and generate plots or any other results with filename starting with `session_id`.
 
-If you would like to access the .nwb files directly or do analysis outside Code Ocean (not recommended though), check out this bucket `s3://aind-behavior-data/foraging_nwb_bonsai/`
+If you would like to access the .nwb files directly or do analysis outside Code Ocean (not recommended though), check out this bucket `s3://aind-behavior-data/foraging_nwb_bonsai/`. For details, see [below](https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-trigger-pipeline?tab=readme-ov-file#accessing-foraging-nwbs-for-off-pipeline-analysis).
 
 ## Pipeline-ready checklist
 Checklist before the pipeline is ready to run:
