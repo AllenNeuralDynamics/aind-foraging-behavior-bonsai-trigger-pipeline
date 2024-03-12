@@ -76,5 +76,19 @@ Checklist before the pipeline is ready to run:
       - I have adapted `collect_and_upload_restuls` so that it can also accept data that are not in /1, /2, ... like those from the pipeline run.
 6. To restore the pipeline, follow above "Pipeline-ready checklist"
 
+## Accessing foraging .nwbs for off-pipeline analysis
+| .nwb datasets                 | Dataset 1                                                       | Dataset 2 (old)                                                       | Dataset 3 (old)                               |
+|-------------------------------|-----------------------------------------------------------------|-----------------------------------------------------------------------|-----------------------------------------------|
+| Where are the data collected? | AIND                                                            | Janelia and AIND                                                      | Most from Janelia; a few from AIND            |
+| Behavior hardware             | Bonsai-Harp                                                     | Bpod                                                                  | Bpod                                          |
+| Modality                      | behavior only                                                   | behavior only                                                         | behavior + ephys + videography                |
+| Size                          | 1065 sessions / 74 mice                                         | 4327 sessions / 157 mice                                              | 26 sessions / 8 mice                          |
+| Still growing?                | Yes; updating daily (by the current repo)                     | No longer updating                                                    | No longer updating                            |
+| Code Ocean data asset         | `foraging_nwb_bonsai`<br>(id=f908dd4d-d7ed-4d52-97cf-ccd0e167c659) | `datajoint_export_all_nwb`<br>(id=e3c137f5-8ac3-4745-b3e8-db07e9d7fdf9)  | `datajoint_export_nwb_with_ephys`<br>(id=dd1ca5de-1b7f-409a-9ad0-150068e1d788)|
+| S3 bucket                     | s3://aind-behavior-data/foraging_nwb_bonsai/                    | s3://aind-behavior-data/Han/ephys/report/all_sessions/export_all_nwb/ | s3://aind-behavior-data/Han/ephys/export/nwb/ |
+| Code Ocean example capsule    | `foraging_behavior_bonsai_nwb`                                  | `Han_datajoint_export`                                                | `Han_datajoint_export`                        |
+| Streamlit visualization       | https://foraging-behavior-browser.streamlit.app/                | https://foraging-behavior-browser.streamlit.app/Old_mice              | https://foraging-ephys-browser.streamlit.app/ |
+| Notes                         | Some sessions have fiber photometry data collected at the same time, but they have not been integrated to the .nwbs yet. | Same as left. ||
+
 ## What's next
 We will likely be refactoring the pipeline after we figure out the AIND behavior metadata schema, but the core ideas and data analysis code developed here will remain. Stay tuned.
