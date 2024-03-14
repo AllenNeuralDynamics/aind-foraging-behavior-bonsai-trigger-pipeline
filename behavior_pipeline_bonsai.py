@@ -59,6 +59,13 @@ rigs = [
     *[{'local': fR'AIND-447-3-{box}', 'remote': fR'\\W10DT714030\behavior_data\447-3-{box}', 
        'user_name': 'svc_aind_behavior', 
        } for box in ('C', 'D')],    
+    
+    # Ephys rigs
+    {'local': fR'323_EPHYS_3', 
+     'remote': fR'\\W10DT713883\BehaviorData\Tower_EphysRig3', 
+     'user_name': 'svc_aind_ephys', 
+     },
+
 ]
 
 get_passcode(rigs)
@@ -131,7 +138,7 @@ def convert_one_json_to_nwb(filepath, nwb_dir):
             bonsai_to_nwb(filepath, nwb_dir)
             return 'done'
         except Exception as e:
-            log.error(f'Error converting {filepath} to .nwb: {str(e)}')
+            log.error(f'Error converting {filename} to .nwb: {str(e)}')
             return 'error'
     else:
         return 'exists'
