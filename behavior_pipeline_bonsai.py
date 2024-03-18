@@ -61,6 +61,11 @@ rigs = [
        } for box in ('C', 'D')],    
     
     # Ephys rigs
+    {'local': fR'323_EPHYS_1', 
+     'remote': fR'\\w10dt713669\EphysRig1', 
+     'user_name': 'svc_aind_ephys', 
+     },
+    
     {'local': fR'323_EPHYS_3', 
      'remote': fR'\\W10DT713883\BehaviorData\Tower_EphysRig3', 
      'user_name': 'svc_aind_ephys', 
@@ -129,17 +134,17 @@ def convert_one_json_to_nwb(filepath, nwb_dir):
     # Skip if name start with 0
     if filename.startswith('0'):
         log.info(f'Skipped {filename}')
-        return 'skipped'
+        return 'invalid_mouse_id'
     
     # Check if corresponding .nwb file exists
     if not os.path.exists(os.path.join(nwb_dir, nwb_filename)):
         try:
             # Convert .json to .nwb
-            bonsai_to_nwb(filepath, nwb_dir)
-            return 'done'
+            nwb_result = bonsai_to_nwb(filepath, nwb_dir)
+            return nwb_result  # empty_trials, incomplete_json, success
         except Exception as e:
             log.error(f'Error converting {filename} to .nwb: {str(e)}')
-            return 'error'
+            return 'uncaught_error'
     else:
         return 'exists'
 
@@ -153,10 +158,13 @@ def batch_convert_json_to_nwb(json_dir, nwb_dir):
                 for filepath in glob.iglob(json_dir + '/**/*.json', recursive=True)]
         results = [job.get() for job in jobs]
         
-    log.info(f'Processed {len(results)} files: '
+    log.info(f'\nProcessed {len(results)} files: '
+             f'{results.count("success")} successfully converted; '             
              f'{results.count("exists")} already exists, '
-             f'{results.count("done")} converted, '             
-             f'{results.count("error")} error')
+             f'{results.count("invalid_mouse_id")} invalid_mouse_id, '
+             f'{results.count("empty_trials")} empty_trials, '
+             f'{results.count("incomplete_json")} incomplete_json, '
+             f'{results.count("uncaught_error")} uncaught error\n\n')
     
 
 def upload_directory_to_s3(source_dir, s3_bucket):
