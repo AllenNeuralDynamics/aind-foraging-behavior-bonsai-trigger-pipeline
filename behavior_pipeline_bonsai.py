@@ -79,8 +79,10 @@ get_passcode(rigs)
 
 # Root path to place bonsai sessions
 behavioral_root = R'F:\Data_for_ingestion\Foraging_behavior\Bonsai'
-to_exclude_folders = f'"0000" "test" "EphysFolder" "HarpFolder" "PhotometryFolder" "VideoFolder"'  # Exclude these folders from syncing
-
+to_exclude_folders = (  # Exclude these folders from syncing
+    f'"0000" "test" "EphysFolder" "HarpFolder" "PhotometryFolder" "VideoFolder" '
+    f'"raw.harp" "behavior-videos" "ecephys" "fib" "metadata-dir"'   # Exclud folders in the new file structure
+)
 # Pipeline log
 pipeline_log = R'F:\Data_for_ingestion\Foraging_behavior\Bonsai\nwb\bonsai_pipeline.log'  # Simplified log for this code
 #==========================================================================
