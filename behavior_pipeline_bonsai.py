@@ -67,7 +67,7 @@ rigs = [
      },
     
     {'local': fR'323_EPHYS_3', 
-     'remote': fR'\\W10DT713883\BehaviorData\Tower_EphysRig3', 
+     'remote': fR'\\W10DT713883\BehaviorData\323_Ephys3', 
      'user_name': 'svc_aind_ephys', 
      },
 
