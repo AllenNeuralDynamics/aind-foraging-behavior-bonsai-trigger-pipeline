@@ -43,11 +43,15 @@ If you would like to access the .nwb files directly or do analysis outside Code 
 
 ## Pipeline-ready checklist
 Checklist before the pipeline is ready to run:
-1. `Han_pipeline_foraging_behavior_bonsai`:
+1. CO pipeline `Han_pipeline_foraging_behavior_bonsai`:
     - No yellow warning sign (otherwise, do a `Reproducible Run` of that capsule first)
     - Check the argument of `foraging_behavior_bonsai_pipeline_assign_job` that controls the number of capsule instances
     - Check the argument of `foraging_behavior_bonsai_nwb` that controls the number of multiprocessing cores of each instance.
        - This number should match the core number of "Adjust Resources for capsule in pipeline"
+    - Make sure the pipeline is set to use "Spot instances" (otherwise it takes too long to start) and "without cache" (otherwise the input S3 bucket will not be updated)
+
+      <img src="https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-trigger-pipeline/assets/24734299/7c15b4cc-12ea-4ba4-ae5c-28fd608ed8e1" width=300>
+
 2. Make sure these capsules are not running (`Status` is four gray dots; VSCode are held or terminated)
    - `foraging_behavior_bonsai_pipeline_assign_job`
    - `foraging_behavior_bonsai_nwb`
