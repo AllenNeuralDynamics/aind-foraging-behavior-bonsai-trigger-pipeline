@@ -73,8 +73,10 @@ Checklist before the pipeline is ready to run:
 
 #### Case A: still use the pipeline (recommended)
 4. Make sure to assign 10 or more workers and set `CPU number = 16` (for spot machine) and `argument = 16`. In this case, you'll have > 10 * 16 = 160 total cores!
+   
 <img src="https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-trigger-pipeline/assets/24734299/2d60c2c1-314b-4b01-ad1b-d91c5321e20b" width=400> <img src="https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-trigger-pipeline/assets/24734299/59a815c3-96a4-4458-a83d-eb298874765e" width=500>
-5. Trigger the pipeline as usual. In this case, only diff of `nwb` and `nwb_processed` will be processed. (it works well if you have already cleaned up the `processed` folder)
+
+6. Trigger the pipeline as usual. In this case, only diff of `nwb` and `nwb_processed` will be processed. (it works well if you have already cleaned up the `processed` folder)
 
 #### Case B: manually run each capsule (obsoleted)
 4. Manually trigger the batch computation in capsule `foraging_behavior_bonsai_nwb`:
