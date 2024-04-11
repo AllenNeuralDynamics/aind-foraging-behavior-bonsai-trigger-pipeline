@@ -60,7 +60,7 @@ Checklist before the pipeline is ready to run:
 4. Make sure ***one and only one instance*** of `foraging-behavior-bonsai-automatic-training` is running.
 
 ## Notes on manually re-process all nwbs and overwrite S3 database (and thus the Streamlit app)
-1. Stop the triggering capsule
+1. Stop the triggering capsule and the AutoTraining capsule.
 2. (optional) Re-generate all nwbs
    - Backup nwb folder on my PC and S3
    - On S3, move the old `/foraging_nwb_bonsai` to a backup folder and create a new `/foraging_nwb_bonsai`
