@@ -112,6 +112,7 @@ def run_pipeline():
             if_upload_success = status['end_status'] == 'succeeded'
             if not if_upload_success:
                 print(f'{datetime.now(pacific_tz)}: upload failed, probably because the data asset is not cached correctly yet. Retrying...')
+                time.sleep(30)
 
         
     print(f'{datetime.now(pacific_tz)}: ALL DONE!')
