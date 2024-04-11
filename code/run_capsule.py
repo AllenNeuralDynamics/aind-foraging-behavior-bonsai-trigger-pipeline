@@ -123,9 +123,7 @@ if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
     nwb_folder = os.path.join(script_dir, '../data/foraging_nwb_bonsai')
     nwb_processed_folder = os.path.join(script_dir, '../data/foraging_nwb_bonsai_processed')
-    
-    print(co_client.get_data_asset('d5271dbd-770d-4083c-b2a0-a3dc5687a411'))
 
-    #while 1:
-    #    run_pipeline()
-    #    time.sleep(10)
+    while 1:
+        run_pipeline()
+        time.sleep(10)
