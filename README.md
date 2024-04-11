@@ -70,6 +70,13 @@ Checklist before the pipeline is ready to run:
    - Clear the old folder
       - **If you don't clear it, at least you should delete `df_sessions.pkl`, `error_files.json`, and `pipeline.log` (they will be appended, not overwritten)**
       - Troubleshooting: when attaching a S3 folder to a capsule, the folder must not be empty (otherwise a "permission denied" error)
+
+#### Case A: still use the pipeline (recommended)
+4. Make sure to assign 10 or more workers and set `CPU number = 16` (for spot machine) and `argument = 16`. In this case, you'll have > 10 * 16 = 160 total cores!
+<img src="https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-trigger-pipeline/assets/24734299/2d60c2c1-314b-4b01-ad1b-d91c5321e20b" width=400> <img src="https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-trigger-pipeline/assets/24734299/59a815c3-96a4-4458-a83d-eb298874765e" width=500>
+5. Trigger the pipeline as usual. In this case, only diff of `nwb` and `nwb_processed` will be processed. (it works well if you have already cleaned up the `processed` folder)
+
+#### Case B: manually run each capsule (obsoleted)
 4. Manually trigger the batch computation in capsule `foraging_behavior_bonsai_nwb`:
    - Make sure the CPU number of the environment is 16 or more :)
    - Run `processing_nwb.py` manually in parallel (with `LOCAL_MANUAL_OVERRIDE = True`)
