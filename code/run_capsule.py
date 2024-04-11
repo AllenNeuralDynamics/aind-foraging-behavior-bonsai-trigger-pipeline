@@ -84,13 +84,12 @@ def run_pipeline():
                                                 tags=['foraging', 'behavior', 'bonsai', 'hanhou', 'pipeline_output']).json()['id']
 
         # --- Wait until data is registered (this does not necessarily mean that the data is correctly "cached") ---
-        if_completed = False
-        while not if_completed:
+        if_registered = False
+        while not if_registered:
             time.sleep(5)
             status = co_client.get_data_asset(result_asset_id)
             print(f'{datetime.now(pacific_tz)}: waiting for registering the data asset...')
-            if status.status_code == 200:
-                if_completed = True        
+            if_registered = (status.status_code == 200) and (status.json()['state'] == 'ready'):      
         
         # --- Retry upload until successful (otherwise the data asset may not be correctly "cached") --
         if_upload_success = False
@@ -111,7 +110,8 @@ def run_pipeline():
             # --- if end_status is not succeeded, retry calling the upload capsule ---
             if_upload_success = status['end_status'] == 'succeeded'
             if not if_upload_success:
-                print(f'{datetime.now(pacific_tz)}: upload failed, probably because the data asset is not cached correctly yet. Retrying...')
+                print(f'{datetime.now(pacific_tz)}: upload failed, probably because the data asset {result_asset_id} is not cached correctly yet. Retrying...')
+                print(f'   {status}')
                 time.sleep(30)
 
         
@@ -124,6 +124,8 @@ if __name__ == "__main__":
     nwb_folder = os.path.join(script_dir, '../data/foraging_nwb_bonsai')
     nwb_processed_folder = os.path.join(script_dir, '../data/foraging_nwb_bonsai_processed')
     
-    while 1:
-        run_pipeline()
-        time.sleep(10)
+    print(co_client.get_data_asset('d5271dbd-770d-4083c-b2a0-a3dc5687a411'))
+
+    #while 1:
+    #    run_pipeline()
+    #    time.sleep(10)
