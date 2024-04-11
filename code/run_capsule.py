@@ -89,7 +89,7 @@ def run_pipeline():
             time.sleep(5)
             status = co_client.get_data_asset(result_asset_id)
             print(f'{datetime.now(pacific_tz)}: waiting for registering the data asset...')
-            if_registered = (status.status_code == 200) and (status.json()['state'] == 'ready'):      
+            if_registered = (status.status_code == 200) and (status.json()['state'] == 'ready')
         
         # --- Retry upload until successful (otherwise the data asset may not be correctly "cached") --
         if_upload_success = False
