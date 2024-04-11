@@ -5,6 +5,7 @@ import glob
 import time
 from pathlib import Path
 from datetime import datetime
+import pytz
 
 from aind_codeocean_api.codeocean import CodeOceanClient
 
@@ -13,6 +14,8 @@ COLLECT_AND_UPLOAD_CAPSULE_ID = '3b851d69-5e4f-4718-b0e5-005ca531aaeb'
 
 co_client = CodeOceanClient(domain=os.getenv('API_KEY'),
                             token=os.getenv('API_SECRET'))
+
+pacific_tz = pytz.timezone('America/Los_Angeles')
 
 #%%
 def _reformat_string(s):
@@ -57,7 +60,7 @@ def run_pipeline():
         # print(f'{datetime.now()}  No new data...')
         return 
     
-    print(f'--- {datetime.now()} ---')
+    print(f'--- {datetime.now(pacific_tz)} ---')
     print(f'Found {len(nwb_to_process)} new nwb files! Trigger computation...')
     # --- Trigger behavior pipeline HERE !!! ----
     pipeline_job_id = co_client.run_capsule(capsule_id=BEHAVIOR_PIPELINE_ID,
@@ -67,11 +70,11 @@ def run_pipeline():
     if_completed = False        
     while not if_completed:
         status = co_client.get_computation(computation_id=pipeline_job_id).json()
-        print(status)
+        print(f'{datetime.now(pacific_tz)}: waiting for nwb processing...')
         if_completed = status['state'] == 'completed' and status['has_results'] == True
         time.sleep(5)
         
-    print('Computation Done!')
+    print(f'{datetime.now(pacific_tz)}: Computation Done!')
     
     if status['end_status'] == 'succeeded':
         # ---- Register data asset ----
@@ -79,19 +82,39 @@ def run_pipeline():
                                                 asset_name=f'foraging_behavior_bonsai_pipeline_results_{status["name"]}',
                                                 mount='foraging_behavior_bonsai_pipeline_results',
                                                 tags=['foraging', 'behavior', 'bonsai', 'hanhou', 'pipeline_output']).json()['id']
-        
-        # ---- Run foraging_behavior_bonsai_pipeline_collect_and_upload_results ----
-        upload_capsule_id = co_client.run_capsule(capsule_id=COLLECT_AND_UPLOAD_CAPSULE_ID, 
-                                                    data_assets=[dict(id=result_asset_id,
-                                                                    mount='foraging_behavior_bonsai_pipeline_results')]).json()['id']
-        if_completed = False          
+
+        # --- Wait until data is registered (this does not necessarily mean that the data is correctly "cached") ---
+        if_completed = False
         while not if_completed:
-            status = co_client.get_computation(computation_id=upload_capsule_id).json()
-            print(status)
-            if_completed = status['state'] == 'completed' and status['end_status'] == 'succeeded'
-            time.sleep(5)        
-    
-    print('Upload Done!')
+            time.sleep(5)
+            status = co_client.get_data_asset(result_asset_id)
+            print(f'{datetime.now(pacific_tz)}: waiting for registering the data asset...')
+            if status.status_code == 200:
+                if_completed = True        
+        
+        # --- Retry upload until successful (otherwise the data asset may not be correctly "cached") --
+        if_upload_success = False
+        while not if_upload_success:
+            # ---- Run foraging_behavior_bonsai_pipeline_collect_and_upload_results ----
+            upload_capsule_id = co_client.run_capsule(capsule_id=COLLECT_AND_UPLOAD_CAPSULE_ID, 
+                                                        data_assets=[dict(id=result_asset_id,
+                                                                        mount='foraging_behavior_bonsai_pipeline_results')]).json()['id']
+            
+            # --- Wait until upload is finished ---
+            if_completed = False          
+            while not if_completed:
+                print(f'{datetime.now(pacific_tz)}: waiting for packaging and uploading results to S3...')
+                status = co_client.get_computation(computation_id=upload_capsule_id).json()
+                if_completed = status['state'] == 'completed'
+                time.sleep(5)
+            
+            # --- if end_status is not succeeded, retry calling the upload capsule ---
+            if_upload_success = status['end_status'] == 'succeeded'
+            if not if_upload_success:
+                print(f'{datetime.now(pacific_tz)}: upload failed, probably because the data asset is not cached correctly yet. Retrying...')
+
+        
+    print(f'{datetime.now(pacific_tz)}: ALL DONE!')
 
 
 if __name__ == "__main__": 
