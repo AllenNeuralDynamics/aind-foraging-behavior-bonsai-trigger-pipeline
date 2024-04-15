@@ -26,7 +26,8 @@ def get_passcode(rigs):
         passcode = json.load(f)
         
     for rig in rigs:
-        rig['passcode'] = passcode[rig['remote'].split('\\\\')[1].split('\\')[0]]
+        if 'user_name' in rig:
+            rig['passcode'] = passcode[rig['remote'].split('\\\\')[1].split('\\')[0]]
                                     
     
 
@@ -62,13 +63,11 @@ rigs = [
     
     # Ephys rigs
     {'local': fR'323_EPHYS_1', 
-     'remote': fR'\\w10dt713669\EphysRig1', 
-     'user_name': 'svc_aind_ephys', 
+     'remote': fR'\\allen\aind\scratch\ephys_rig_behavior_transfer\323_EPHYS1', 
      },
     
     {'local': fR'323_EPHYS_3', 
-     'remote': fR'\\W10DT713883\BehaviorData\323_Ephys3', 
-     'user_name': 'svc_aind_ephys', 
+     'remote': fR'\\allen\aind\scratch\ephys_rig_behavior_transfer\323_EPHYS3', 
      },
 
 ]
@@ -83,6 +82,12 @@ to_exclude_folders = (  # Exclude these folders from syncing
     f'"0000" "test" "EphysFolder" "HarpFolder" "PhotometryFolder" "VideoFolder" '
     f'"raw.harp" "behavior-videos" "ecephys" "fib" "metadata-dir"'   # Exclud folders in the new file structure
 )
+
+to_exclude_files = (  # Exclude these files from syncing
+    f'"finished" '
+)
+
+
 # Pipeline log
 pipeline_log = R'F:\Data_for_ingestion\Foraging_behavior\Bonsai\nwb\bonsai_pipeline.log'  # Simplified log for this code
 #==========================================================================
@@ -103,8 +108,16 @@ def sync_behavioral_folders():
     
     for rig in rigs:
         summary_start = False
-        command = fR'''net use {rig['remote']} /u:{rig['user_name']} {rig['passcode']} &&'''\
-                  fR'''robocopy  {rig['remote']} {behavioral_root}\{rig['local']} /e /xx /XD {to_exclude_folders} /xj /xjd /mt /np /Z /W:1 /R:5 /tee /fft'''
+        
+        if 'user_name' in rig:  # If remote needs user_name and passcode to log in
+            cmd_net_use = fR'''net use {rig['remote']} /u:{rig['user_name']} {rig['passcode']} &&'''
+        else:
+            cmd_net_use = ''
+        
+        command = (
+            cmd_net_use +
+            fR'''robocopy  {rig['remote']} {behavioral_root}\{rig['local']} /e /xx /XD {to_exclude_folders} /XF {to_exclude_files} /xj /xjd /mt /np /Z /W:1 /R:5 /tee /fft'''
+        )
                 #   fR'''net use {rig['remote']} /d /y'''         
                    ##fR'''net use {rig['remote']} /u:{rig['user_name']} {rig['passcode']}&&'''\          
                 
