@@ -39,25 +39,28 @@ def ssh_command(ip, port, user, passwd, cmds):
 if __name__ == '__main__':
     #=============================   Change me!!! ===============================
     rigs = {
-        "447-1-A/B": "W10DT714033",
-        "447-1-C/D": "W10DT714086", 
-        "447-2-A/B": "W10DT714084",
-        "447-2-C/D": "W10DT714027", 
-        "447-3-A/B": "W10DT714028", 
-        "447-3-C/D": "W10DT714030",
+        # alias: [pc_name, user_name, conda_path, env_name]
+        "447-1-A/B": ["W10DT714033", "svc_aind_behavior", R"C:/Users/svc_aind_behavior/AppData/Local/miniconda3/condabin/conda.bat", "Foraging"],
+        "447-1-C/D": ["W10DT714086", "svc_aind_behavior", R"C:/Users/svc_aind_behavior/AppData/Local/miniconda3/condabin/conda.bat", "Foraging"], 
+        "447-2-A/B": ["W10DT714084", "svc_aind_behavior", R"C:/Users/svc_aind_behavior/AppData/Local/miniconda3/condabin/conda.bat", "Foraging"],
+        "447-2-C/D": ["W10DT714027", "svc_aind_behavior", R"C:/Users/svc_aind_behavior/AppData/Local/miniconda3/condabin/conda.bat", "Foraging"], 
+        "447-3-A/B": ["W10DT714028", "svc_aind_behavior", R"C:/Users/svc_aind_behavior/AppData/Local/miniconda3/condabin/conda.bat", "Foraging"], 
+        "447-3-C/D": ["W10DT714030", "svc_aind_behavior", R"C:/Users/svc_aind_behavior/AppData/Local/miniconda3/condabin/conda.bat", "Foraging"],
+        "323_EPHYS_1": ["W10DT713669", "svc_aind_ephys", R"C:\ProgramData\Miniconda3\condabin\conda.bat", "Foraging"],
+        "323_EPHYS_3": ["W10DT713883", "svc_aind_ephys", R"C:\Users\svc_aind_ephys\Anaconda3\Library\bin\conda.bat", "ForagingGUI"],
     }
     
-    conda_path = "C:/Users/svc_aind_behavior/AppData/Local/miniconda3/condabin/conda.bat" 
-    env_name = "Foraging"
-    cmds = [
-        f'call "{conda_path}" activate {env_name}',
-        f'pip show aind-auto-train | findstr Version',
-        # f'pip install --upgrade git+https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-automatic-training.git@main',
-        # f'pip show aind-auto-train | findstr Version',
-        ]
-
     # Copy behavioral folders from remote PCs to local
-    for rig, pc_name in rigs.items():
+    for rig, (pc_name, user_name, conda_path, env_name) in rigs.items():
         print(f"\n\n=============== {rig} ({pc_name}) ===============")
-        ssh_command(pc_name, 22, "svc_aind_behavior", get_passcode(pc_name), cmds)
+        cmds = [
+            f'call "{conda_path}" activate {env_name}',
+            
+            # Update aind-auto-train package
+            f'pip show aind-auto-train | findstr Version',
+            f'pip install --upgrade git+https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-automatic-training.git@main',
+            f'pip show aind-auto-train | findstr Version',
+            ]
+
+        ssh_command(pc_name, 22, user_name, get_passcode(pc_name), cmds)
     
