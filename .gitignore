@@ -1,3 +1,4 @@
 /data/
 
 .vscode
+code/util_upload_nwb_to_s3/passcode.json
