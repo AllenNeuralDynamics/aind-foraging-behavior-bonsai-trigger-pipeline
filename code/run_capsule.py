@@ -51,7 +51,7 @@ def get_nwb_to_process(nwb_folder, nwb_processed_folder):
     return nwb_to_process
 
 
-def run_pipeline():
+def run_pipeline(max_upload_retry=20):
 
     # Get nwbs that are not processed
     nwb_to_process = get_nwb_to_process(nwb_folder, nwb_processed_folder)
@@ -93,6 +93,7 @@ def run_pipeline():
         
         # --- Retry upload until successful (otherwise the data asset may not be correctly "cached") --
         if_upload_success = False
+        upload_retry_number = 0
         while not if_upload_success:
             # ---- Run foraging_behavior_bonsai_pipeline_collect_and_upload_results ----
             upload_capsule_id = co_client.run_capsule(capsule_id=COLLECT_AND_UPLOAD_CAPSULE_ID, 
@@ -110,10 +111,16 @@ def run_pipeline():
             # --- if end_status is not succeeded, retry calling the upload capsule ---
             if_upload_success = status['end_status'] == 'succeeded'
             if not if_upload_success:
-                print(f'{datetime.now(pacific_tz)}: upload failed, probably because the data asset {result_asset_id} is not cached correctly yet. Retrying...')
+                print(f'{datetime.now(pacific_tz)}: upload failed, probably because the data asset {result_asset_id} is not cached correctly yet. Retrying ({upload_retry_number} times)...')
                 print(f'   {status}')
-                time.sleep(30)
+                
+                # If retry upload for too many times, discard the result and rerun the pipeline.
+                upload_retry_number += 1
+                if upload_retry_number > max_upload_retry:
+                    print(f'{datetime.now(pacific_tz)}: Upload keeps failing for {upload_retry_number} times! Restart watch dog...\n\n')
+                    return
 
+                time.sleep(30)
         
     print(f'{datetime.now(pacific_tz)}: ALL DONE!')
 
