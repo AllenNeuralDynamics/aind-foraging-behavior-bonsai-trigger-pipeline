@@ -34,43 +34,35 @@ def get_passcode(rigs):
 #=============================   Change me!!! ===============================
 # Address of remote training rig PCs
 # Solve connection bugs: https://stackoverflow.com/questions/24933661/multiple-connections-to-a-server-or-shared-resource-by-the-same-user-using-more
-rigs = [
-   
-    # New boxs in Rm 447
-    *[{'local': fR'AIND-447-1-{box}', 'remote': fR'\\W10DT714033\behavior_data\447-1-{box}', 
-       'user_name': 'svc_aind_behavior', 
-      } for box in ('A', 'B')],   
 
-    *[{'local': fR'AIND-447-1-{box}', 'remote': fR'\\W10DT714086\behavior_data\447-1-{box}', 
-       'user_name': 'svc_aind_behavior', 
-       } for box in ('C', 'D')],       
-    
-    *[{'local': fR'AIND-447-2-{box}', 'remote': fR'\\W10DT714084\behavior_data\447-2-{box}', 
-       'user_name': 'svc_aind_behavior', 
-       } for box in ('A', 'B')],   
-    
-    *[{'local': fR'AIND-447-2-{box}', 'remote': fR'\\W10DT714027\behavior_data\447-2-{box}', 
-       'user_name': 'svc_aind_behavior', 
-       } for box in ('C', 'D')],
-    
-    *[{'local': fR'AIND-447-3-{box}', 'remote': fR'\\W10DT714028\behavior_data\447-3-{box}', 
-       'user_name': 'svc_aind_behavior', 
-       } for box in ('A', 'B')],
+# -- Load standardized rigs --
+with open(os.path.dirname(os.path.abspath(__file__)) + R'\rig_mapper.json') as f:
+    rig_mapper = json.load(f)
 
-    *[{'local': fR'AIND-447-3-{box}', 'remote': fR'\\W10DT714030\behavior_data\447-3-{box}', 
-       'user_name': 'svc_aind_behavior', 
-       } for box in ('C', 'D')],    
-    
-    # Ephys rigs
-    {'local': fR'323_EPHYS_1', 
-     'remote': fR'\\allen\aind\scratch\ephys_rig_behavior_transfer\323_EPHYS1', 
-     },
-    
-    {'local': fR'323_EPHYS_3', 
-     'remote': fR'\\allen\aind\scratch\ephys_rig_behavior_transfer\323_EPHYS3', 
-     },
+rigs = []
+for pc, boxes in rig_mapper.items():
+    for box in boxes:
+        rigs.append(
+            {
+                'local': f'AIND-{box}',
+                'remote': fR'\\{pc}\behavior_data\{box}',
+                'user_name': 'svc_aind_behavior',
+            }
+        )
 
-]
+# -- Append non-standardized rigs --
+rigs.extend(
+    [
+        # Ephys rigs
+        {'local': fR'323_EPHYS_1', 
+        'remote': fR'\\allen\aind\scratch\ephys_rig_behavior_transfer\323_EPHYS1', 
+        },
+        
+        {'local': fR'323_EPHYS_3', 
+        'remote': fR'\\allen\aind\scratch\ephys_rig_behavior_transfer\323_EPHYS3', 
+        },
+    ]
+)
 
 get_passcode(rigs)
 
