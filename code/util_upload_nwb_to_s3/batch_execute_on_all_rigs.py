@@ -37,15 +37,23 @@ def ssh_command(ip, port, user, passwd, cmds):
 
                 
 if __name__ == '__main__':
-    #=============================   Change me!!! ===============================
-    rigs = {
+    
+    # -- Load standardized rigs --
+    with open(os.path.dirname(os.path.abspath(__file__)) + R'\rig_mapper.json') as f:
+        rig_mapper = json.load(f)
+
+    rigs = {}
+    for pc, boxes in rig_mapper.items():
         # alias: [pc_name, user_name, conda_path, env_name]
-        "447-1-A/B": ["W10DT714033", "svc_aind_behavior", R"C:/Users/svc_aind_behavior/AppData/Local/miniconda3/condabin/conda.bat", "Foraging"],
-        "447-1-C/D": ["W10DT714086", "svc_aind_behavior", R"C:/Users/svc_aind_behavior/AppData/Local/miniconda3/condabin/conda.bat", "Foraging"], 
-        "447-2-A/B": ["W10DT714084", "svc_aind_behavior", R"C:/Users/svc_aind_behavior/AppData/Local/miniconda3/condabin/conda.bat", "Foraging"],
-        "447-2-C/D": ["W10DT714027", "svc_aind_behavior", R"C:/Users/svc_aind_behavior/AppData/Local/miniconda3/condabin/conda.bat", "Foraging"], 
-        "447-3-A/B": ["W10DT714028", "svc_aind_behavior", R"C:/Users/svc_aind_behavior/AppData/Local/miniconda3/condabin/conda.bat", "Foraging"], 
-        "447-3-C/D": ["W10DT714030", "svc_aind_behavior", R"C:/Users/svc_aind_behavior/AppData/Local/miniconda3/condabin/conda.bat", "Foraging"],
+        rigs['/'.join(boxes)] = [
+            pc, "svc_aind_behavior", R"C:/Users/svc_aind_behavior/AppData/Local/miniconda3/condabin/conda.bat", "Foraging"
+        ]
+
+    # -- Append non-standardized rigs --
+    rigs = { 
+        **rigs,
+        
+        # Ephys rigs
         "323_EPHYS_1": ["W10DT713669", "svc_aind_ephys", R"C:\ProgramData\Miniconda3\condabin\conda.bat", "Foraging"],
         "323_EPHYS_3": ["W10DT713883", "svc_aind_ephys", R"C:\Users\svc_aind_ephys\Anaconda3\Library\bin\conda.bat", "ForagingGUI"],
     }
@@ -54,12 +62,14 @@ if __name__ == '__main__':
     for rig, (pc_name, user_name, conda_path, env_name) in rigs.items():
         print(f"\n\n=============== {rig} ({pc_name}) ===============")
         cmds = [
-            f'call "{conda_path}" activate {env_name}',
+            # Share folder
+            # fR"net share behavior_data=C:\behavior_data /grant:svc_aind_behavior,FULL",
             
             # Update aind-auto-train package
+            f'call "{conda_path}" activate {env_name}',
             f'pip show aind-auto-train | findstr Version',
-            f'pip install --upgrade git+https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-automatic-training.git@main',
-            f'pip show aind-auto-train | findstr Version',
+            # f'pip install --upgrade git+https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-automatic-training.git@main',
+            # f'pip show aind-auto-train | findstr Version',
             ]
 
         ssh_command(pc_name, 22, user_name, get_passcode(pc_name), cmds)
