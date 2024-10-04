@@ -110,7 +110,7 @@ def sync_behavioral_folders():
             cmd_net_use +
             fR'''robocopy  {rig['remote']} {behavioral_root}\{rig['local']} '''
             fR'''/e /xx /XD {to_exclude_folders} /XF {to_exclude_files} '''
-            fR'''/xj /xjd /mt /np /Z /W:1 /R:5 /tee /MINAGE:20241001'''
+            fR'''/xj /xjd /mt /np /Z /W:1 /R:5 /tee /MAXAGE:20241001'''
         )
                 #   fR'''net use {rig['remote']} /d /y'''         
                    ##fR'''net use {rig['remote']} /u:{rig['user_name']} {rig['passcode']}&&'''\          
