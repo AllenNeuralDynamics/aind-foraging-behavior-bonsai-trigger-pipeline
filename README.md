@@ -1,4 +1,4 @@
-# Foraging Behavior Pipeline for Bonsai
+x# Foraging Behavior Pipeline for Bonsai
 (Han Hou @ Aug 2023)
 
 ***This is still a temporary workaround until AIND behavior pipeline is implemented.***
@@ -30,7 +30,12 @@ See [this repo](https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bo
 ## How to add more rigs
 - On the rig PC, share the data folder to the Windows Network.
 - Make sure the data folder is accessible through typing the network address like `\\W10DT714033\behavior_data\447-1-D` in Windows Explorer on another PC.
-- Let me know network address, the username, and the passcode. I will create a new entry [here](https://github.com/hanhou/code_cache/blob/dcf0eccb264db9a59d21fc238358970bbe74e1af/sync_bonsai/behavior_pipeline_bonsai.py#L36-L62).
+- Add the new rig info [here](https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-trigger-pipeline/blob/4293c41fbbad31f9953bca7f86f685a681267abf/code/util_upload_nwb_to_s3/behavior_pipeline_bonsai.py#L38-L65).
+  - If it is a standard training rig, simply add it to [`rig_mapper.json`](https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-trigger-pipeline/blob/4293c41fbbad31f9953bca7f86f685a681267abf/code/util_upload_nwb_to_s3/rig_mapper.json)
+  - Else, add it [here](https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-trigger-pipeline/blob/4293c41fbbad31f9953bca7f86f685a681267abf/code/util_upload_nwb_to_s3/behavior_pipeline_bonsai.py#L54) by providing local cache folder, remote folder, and username (if needs username and passcode to access the data)
+- SSH to the server machine (currently W10DT714033), and
+  - pull the above changes.
+  - If the passcode is required, add the passcode to `passcode.json` in the local repo.
 
 ## How to add more analyses
 The pipeline is still a prototype at this moment. As you can see in the [Streamlit app](https://foraging-behavior-browser.streamlit.app/Bonsai), so far I only implemented [two basic analyses](https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-basic/blob/e740865cf7c5ed9c649147156d8b2afada714249/code/process_nwbs.py#L181-L195): 
