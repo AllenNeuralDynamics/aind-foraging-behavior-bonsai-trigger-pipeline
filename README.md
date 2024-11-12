@@ -1,4 +1,4 @@
-x# Foraging Behavior Pipeline for Bonsai
+# Foraging Behavior Pipeline for Bonsai
 (Han Hou @ Aug 2023)
 
 ***This is still a temporary workaround until AIND behavior pipeline is implemented.***
