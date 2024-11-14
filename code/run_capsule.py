@@ -91,6 +91,8 @@ def run_pipeline(max_upload_retry=20):
             print(f'{datetime.now(pacific_tz)}: waiting for registering the data asset...')
             if_registered = (status.status_code == 200) and (status.json()['state'] == 'ready')
         
+        print(f'{datetime.now(pacific_tz)}: data asset registered. Calling upload capsule...')
+
         # --- Retry upload until successful (otherwise the data asset may not be correctly "cached") --
         if_upload_success = False
         upload_retry_number = 0
@@ -131,6 +133,10 @@ if __name__ == "__main__":
     nwb_folder = os.path.join(script_dir, '../data/foraging_nwb_bonsai')
     nwb_processed_folder = os.path.join(script_dir, '../data/foraging_nwb_bonsai_processed')
 
-    while 1:
+    # Jon helped me trigger this capsule 10 PM each day by airflow.
+    # So now there is no need to keep this capsule running.
+    # For safety, we still run 3 times to make sure there aren't any missed sessions.
+    RUN_TIMES = 3  # Max pipeline run time for each run
+    for i in range(RUN_TIMES):
         run_pipeline()
         time.sleep(10)
