@@ -57,7 +57,7 @@ def run_pipeline(max_upload_retry=20):
     nwb_to_process = get_nwb_to_process(nwb_folder, nwb_processed_folder)
 
     if not len(nwb_to_process):
-        # print(f'{datetime.now()}  No new data...')
+        print(f'{datetime.now()}  No new data...')
         return 
     
     print(f'--- {datetime.now(pacific_tz)} ---')
