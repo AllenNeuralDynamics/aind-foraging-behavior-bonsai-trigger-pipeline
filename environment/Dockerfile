@@ -1,7 +1,9 @@
-# hash:sha256:dc2b45a29543d6e1f2ed8dbbf41cd9cbcb685d1e40aba4683a36eaed7e115ef0
-FROM registry.codeocean.allenneuraldynamics.org/codeocean/jupyterlab:3.0.9-miniconda4.9.2-python3.8-ubuntu20.04
+# hash:sha256:6e7768e6d7846108066259f53310595eab4affa163e94eb9e688deeb4c95c13c
+ARG REGISTRY_HOST
+FROM $REGISTRY_HOST/codeocean/jupyterlab:3.0.9-miniconda4.9.2-python3.8-ubuntu20.04
 
 ARG DEBIAN_FRONTEND=noninteractive
+ARG CUSTOM_KEY
 
 ARG GIT_ASKPASS
 ARG GIT_ACCESS_TOKEN

@@ -1,7 +1,6 @@
 environment_version: 1
 credentials:
-- type: api-key
-  id: RNuRgFZ61XfNeZ
-  description: Code Ocean API
-  key: API_KEY
-  secret: API_SECRET
+- type: general
+  id: 5TnuDS4mHIaQ6uTD
+  description: CODEOCEAN_API_SECRET_HAN
+  value: CO_API_SECRET

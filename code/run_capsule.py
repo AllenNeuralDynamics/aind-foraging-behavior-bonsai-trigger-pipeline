@@ -12,8 +12,8 @@ from aind_codeocean_api.codeocean import CodeOceanClient
 BEHAVIOR_PIPELINE_ID = '93b5045b-b77d-4426-97ef-75c22e618798'
 COLLECT_AND_UPLOAD_CAPSULE_ID = '3b851d69-5e4f-4718-b0e5-005ca531aaeb'
 
-co_client = CodeOceanClient(domain=os.getenv('API_KEY'),
-                            token=os.getenv('API_SECRET'))
+co_client = CodeOceanClient(domain="https://codeocean.allenneuraldynamics.org",
+                            token=os.getenv('CO_API_SECRET'))
 
 pacific_tz = pytz.timezone('America/Los_Angeles')
 
