@@ -30,6 +30,7 @@ See [this repo](https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bo
 ## How to add more rigs
 - On the rig PC, share the data folder to the Windows Network.
 - Make sure the data folder is accessible through typing the network address like `\\W10DT714033\behavior_data\447-1-D` in Windows Explorer on another PC.
+  (Han will take care of the remaining steps)
 - Add the new rig info [here](https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-trigger-pipeline/blob/4293c41fbbad31f9953bca7f86f685a681267abf/code/util_upload_nwb_to_s3/behavior_pipeline_bonsai.py#L38-L65).
   - If it is a standard training rig, simply add it to [`rig_mapper.json`](https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-trigger-pipeline/blob/4293c41fbbad31f9953bca7f86f685a681267abf/code/util_upload_nwb_to_s3/rig_mapper.json)
   - Else, add it [here](https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-trigger-pipeline/blob/4293c41fbbad31f9953bca7f86f685a681267abf/code/util_upload_nwb_to_s3/behavior_pipeline_bonsai.py#L54) by providing local cache folder, remote folder, and username (if needs username and passcode to access the data)
