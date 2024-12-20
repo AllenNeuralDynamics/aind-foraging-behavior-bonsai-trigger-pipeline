@@ -69,7 +69,7 @@ get_passcode(rigs)
 #%%
 
 # Root path to place bonsai sessions
-behavioral_root = R'F:\Data_for_ingestion\Foraging_behavior\Bonsai'
+behavioral_root = R'C:\han_temp_pipeline'
 to_exclude_folders = (  # Exclude these folders from syncing
     f'"0000" "test" "EphysFolder" "HarpFolder" "PhotometryFolder" "VideoFolder" '
     f'"raw.harp" "behavior-videos" "ecephys" "fib" "metadata-dir"'   # Exclud folders in the new file structure
@@ -81,7 +81,7 @@ to_exclude_files = (  # Exclude these files from syncing
 
 
 # Pipeline log
-pipeline_log = R'F:\Data_for_ingestion\Foraging_behavior\Bonsai\nwb\bonsai_pipeline.log'  # Simplified log for this code
+pipeline_log = R'C:\han_temp_pipeline\nwb\bonsai_pipeline.log'  # Simplified log for this code
 #==========================================================================
 
 logging.basicConfig(# filename=pipeline_log, 
@@ -108,7 +108,9 @@ def sync_behavioral_folders():
         
         command = (
             cmd_net_use +
-            fR'''robocopy  {rig['remote']} {behavioral_root}\{rig['local']} /e /xx /XD {to_exclude_folders} /XF {to_exclude_files} /xj /xjd /mt /np /Z /W:1 /R:5 /tee /fft'''
+            fR'''robocopy  {rig['remote']} {behavioral_root}\{rig['local']} '''
+            fR'''/e /xx /XD {to_exclude_folders} /XF {to_exclude_files} '''
+            fR'''/xj /xjd /mt /np /Z /W:1 /R:5 /tee /MAXAGE:20241001'''
         )
                 #   fR'''net use {rig['remote']} /d /y'''         
                    ##fR'''net use {rig['remote']} /u:{rig['user_name']} {rig['passcode']}&&'''\          
@@ -176,7 +178,7 @@ def batch_convert_json_to_nwb(json_dir, nwb_dir):
 
 def upload_directory_to_s3(source_dir, s3_bucket):
     # Create the AWS CLI command
-    aws_cli_command = ['aws', 's3', 'sync', source_dir, f's3://{s3_bucket}/']
+    aws_cli_command = [R'C:\Program Files\Amazon\AWSCLIV2\aws', 's3', 'sync', source_dir, f's3://{s3_bucket}/']
 
     # Execute the AWS CLI command
     subprocess.run(aws_cli_command, check=True)
@@ -193,6 +195,6 @@ if __name__ == '__main__':
     batch_convert_json_to_nwb(behavioral_root, behavioral_root + '\\nwb')
     
     # Sync with AWS bucket
-    upload_directory_to_s3(source_dir = R"F:\Data_for_ingestion\Foraging_behavior\Bonsai\nwb", 
+    upload_directory_to_s3(source_dir = R"C:\han_temp_pipeline\nwb", 
                            s3_bucket="aind-behavior-data/foraging_nwb_bonsai", 
                            )
