@@ -196,7 +196,7 @@ if __name__ == '__main__':
     batch_convert_json_to_nwb(behavioral_root, behavioral_root + '\\nwb')
     
     # Export raw sessions on VAST to json
-    get_behavior_sessions_from_VAST(behavioral_root + '\\nwb\\sessions.json')
+    get_behavior_sessions_from_VAST(behavioral_root + '\\nwb\\raw_sessions_on_VAST.json')
     
     # Sync with AWS bucket
     upload_directory_to_s3(source_dir = R"C:\han_temp_pipeline\nwb", 
