@@ -143,8 +143,13 @@ def convert_one_json_to_nwb(filepath, nwb_dir):
 
     # Skip if name start with 0
     if filename.startswith('0'):
-        log.info(f'Skipped {filename}')
-        return 'invalid_mouse_id'
+        log.info(f'Skipped {filename}: file name start with 0')
+        return 'mouse_id_start_with_0'
+    
+    # Skip if name include "behavior_session_model"
+    if 'behavior_session_model' in filename:
+        log.info(f'Skipped {filename}: file name include "behavior_session_model"')
+        return 'behavior_session_model_in_json_name'
     
     # Check if corresponding .nwb file exists
     if not os.path.exists(os.path.join(nwb_dir, nwb_filename)):
@@ -171,9 +176,10 @@ def batch_convert_json_to_nwb(json_dir, nwb_dir):
     log.info(f'\nProcessed {len(results)} files: '
              f'{results.count("success")} successfully converted; '             
              f'{results.count("exists")} already exists, '
-             f'{results.count("invalid_mouse_id")} invalid_mouse_id, '
+             f'{results.count("mouse_id_start_with_0")} mouse_id_start_with_0, '
              f'{results.count("empty_trials")} empty_trials, '
              f'{results.count("incomplete_json")} incomplete_json, '
+             f'{results.count("behavior_session_model_in_json_name")} behavior_session_model_in_json_name, '
              f'{results.count("uncaught_error")} uncaught error\n\n')
     
 
