@@ -33,7 +33,7 @@ def _reformat_string(s):
 
 def get_nwb_to_process(nwb_folder, nwb_processed_folder):
     # The simplest solution: find nwb files that have not been processed
-    nwb = [f_name.split('/')[-1].split('.')[0] for f_name in glob.glob(f'{nwb_folder}/*.nwb')]
+    nwb = [f_name.split('/')[-1].split('.')[0].replace("behavior_", "") for f_name in glob.glob(f'{nwb_folder}/*.nwb')]
     nwb_processed = [f_name.split('/')[-1].split('.')[0] for f_name in glob.glob(f'{nwb_processed_folder}/*')]
     
     # Per this issue https://github.com/AllenNeuralDynamics/aind-foraging-behavior-bonsai-basic/issues/1, 
