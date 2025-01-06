@@ -42,7 +42,7 @@ def get_nwb_to_process(nwb_folder, nwb_processed_folder):
 
     f_error = f'{nwb_processed_folder}/error_files.json'
     if Path(f_error).exists():
-        nwb_errors = [f_name.split('/')[-1].split('.')[0] for f_name in json.load(open(f'{nwb_processed_folder}/error_files.json'))]
+        nwb_errors = [f_name.split('/')[-1].split('.')[0].replace("behavior_", "") for f_name in json.load(open(f'{nwb_processed_folder}/error_files.json'))]
     else:
         nwb_errors = []
         
