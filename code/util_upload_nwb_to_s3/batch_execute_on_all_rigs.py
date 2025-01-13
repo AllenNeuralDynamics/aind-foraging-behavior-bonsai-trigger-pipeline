@@ -8,16 +8,9 @@ import time
 
 import paramiko
 
+from util import get_passcode
 from foraging_gui.TransferToNWB import bonsai_to_nwb
 
-#%%
-def get_passcode(pc_name):
-    ''' Get passcode for remote PCs from json
-    '''
-    with open(os.path.dirname(os.path.abspath(__file__)) + '\passcode.json') as f:
-        passcode = json.load(f)
-        
-    return passcode[pc_name]
     
 def ssh_command(ip, port, user, passwd, cmds):
     client = paramiko.SSHClient()
