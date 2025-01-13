@@ -14,7 +14,7 @@ import json
 import multiprocessing as mp
 
 from foraging_gui.TransferToNWB import bonsai_to_nwb
-from raw_data_inventory import get_behavior_sessions_from_VAST
+from raw_data_inventory import get_raw_behavior_sessions
 
 import warnings
 warnings.simplefilter('ignore', FutureWarning)
@@ -202,7 +202,7 @@ if __name__ == '__main__':
     batch_convert_json_to_nwb(behavioral_root, behavioral_root + '\\nwb')
     
     # Export raw sessions on VAST to json
-    get_behavior_sessions_from_VAST(behavioral_root + '\\nwb\\raw_sessions_on_VAST.json')
+    get_raw_behavior_sessions(behavioral_root + '\\nwb\\raw_sessions_on_VAST.json')
     
     # Sync with AWS bucket
     upload_directory_to_s3(source_dir = R"C:\han_temp_pipeline\nwb", 
