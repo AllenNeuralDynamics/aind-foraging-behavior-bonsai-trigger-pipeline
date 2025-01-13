@@ -49,8 +49,7 @@ def get_raw_behavior_sessions(root_folder, patterns):
     return matches
 
 
-if __name__ == '__main__':
-
+def get_raw_behavior_sessions_from_multiple_places(json_path="raw_sessions_on_VAST.json"):
     matches = []
 
     for host_setting in HOST_SETTINGS:
@@ -79,5 +78,10 @@ if __name__ == '__main__':
         subprocess.run(command, shell=True, capture_output=True, text=True)
 
     # Save to json
-    with open("raw_sessions_on_VAST.json", 'w') as f:
+    with open(json_path, 'w') as f:
         json.dump(matches, f, indent=4)
+
+
+if __name__ == '__main__':
+    get_raw_behavior_sessions_from_multiple_places()
+    print("Done")
