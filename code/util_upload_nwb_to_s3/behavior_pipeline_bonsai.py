@@ -63,7 +63,7 @@ rigs.extend(
         'remote': fR'\\allen\aind\scratch\ephys_rig_behavior_transfer\323_EPHYS3', 
         },
         
-        {'local': fR'323_EPHYS_4',
+        {'local': fR'322_EPHYS_4',
          'remote': fR'\\W10DT714670\dynamic-foraging\322_EPHYS4',
          'user_name': 'svc_aind_ephys',}
     ]
