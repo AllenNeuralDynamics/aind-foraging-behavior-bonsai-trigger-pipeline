@@ -12,6 +12,9 @@ import glob
 import os
 import json
 import multiprocessing as mp
+import shutil
+import smartsheet
+
 
 from foraging_gui.TransferToNWB import bonsai_to_nwb
 from raw_data_inventory import get_raw_behavior_sessions_from_multiple_places
@@ -19,18 +22,17 @@ from raw_data_inventory import get_raw_behavior_sessions_from_multiple_places
 import warnings
 warnings.simplefilter('ignore', FutureWarning)
 
+# Load passcode
+with open(os.path.dirname(os.path.abspath(__file__)) + '\passcode.json') as f:
+    passcode = json.load(f)
+
 #%%
 def get_passcode(rigs):
     ''' Get passcode for remote PCs from json
     '''
-    with open(os.path.dirname(os.path.abspath(__file__)) + '\passcode.json') as f:
-        passcode = json.load(f)
-        
     for rig in rigs:
         if 'user_name' in rig:
             rig['passcode'] = passcode[rig['remote'].split('\\\\')[1].split('\\')[0]]
-                                    
-    
 
 #=============================   Change me!!! ===============================
 # Address of remote training rig PCs
@@ -194,10 +196,46 @@ def upload_directory_to_s3(source_dir, s3_bucket):
     # Execute the AWS CLI command
     subprocess.run(aws_cli_command, check=True)
     
+def fetch_schedule_and_past_mice():
+    '''
+    Fetch current experiment schedule from AIND scratch, where Alex's code downloads from the smartsheet
+    https://github.com/AllenNeuralDynamics/behavior_communication/blob/main/schedule/download_schedule.py
+    (because I don't have the access to the sheet_id of the current schedule for now)
+    
+    and fetch past mice metadata directly from smartsheet
+    '''
+    # --- Copy current schedule ---
+    try:
+        shutil.copy(R"\\allen\aind\scratch\dynamic_foraging\DynamicForagingSchedule.csv",
+                    behavioral_root + R"\nwb\schedule_current.csv"
+                    )
+        log.info('Copy schedule successfully!')
+    except Exception as e:
+        log.warning(f'Error fetching schedule: {str(e)}')
+        
+    # --- Download past mice metadata ---
+    try:
+        sheet_ID = 5745380507471748   # past mice in behavior
+        download_folder = behavioral_root + R"\nwb"
+        filename = 'schedule_past_mice.csv'
+
+        smart = smartsheet.Smartsheet(access_token=passcode["smart_sheet_token"])
+        smart.Sheets.get_sheet_as_csv(
+            sheet_ID,
+            download_path=download_folder,
+            alternate_file_name=filename
+            )
+        log.info('Download past mice metadata successfully!')
+    except Exception as e:
+        log.warning(f'Error fetching past mice metadata: {str(e)}')
+
                 
 if __name__ == '__main__':
     
     log.info(f'\n\n=====================================================================')
+    
+    # Fetch schedule
+    fetch_schedule_and_past_mice()
     
     # Copy behavioral folders from remote PCs to local
     sync_behavioral_folders()
