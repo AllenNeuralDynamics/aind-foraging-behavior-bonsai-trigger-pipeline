@@ -18,6 +18,7 @@ import pandas as pd
 
 from foraging_gui.TransferToNWB import bonsai_to_nwb
 from raw_data_inventory import get_raw_behavior_sessions_from_multiple_places
+from util import reformat_PI_names
 
 import warnings
 warnings.simplefilter('ignore', FutureWarning)
@@ -229,13 +230,31 @@ def fetch_schedule_and_past_mice():
     except Exception as e:
         log.warning(f'Error fetching past mice metadata: {str(e)}')
         
-def parse_mice_pi_mapping():
+def parse_and_save_mice_pi_mapping():
     '''Parse mice-PI mapping from the schedule'''
     df_schedule = pd.read_csv(
-        behavioral_root + R"\nwb\schedule_current.csv")[["Mouse ID", "PI"]].dropna().drop_duplicates()
+        behavioral_root + R"\nwb\schedule_current.csv")[["Mouse ID", "PI"]].dropna(
+    ).drop_duplicates().rename(columns={'Mouse ID': 'subject_id'})
     df_past_mice = pd.read_csv(
-        behavioral_root + R"\nwb\schedule_past_mice.csv")[["Mouse ID", "PI"]].dropna().drop_duplicates()
-    pass
+        behavioral_root + R"\nwb\schedule_past_mice.csv")[["Mouse ID", "PI"]].dropna(
+    ).drop_duplicates().rename(columns={'Mouse ID': 'subject_id'})
+        
+    # Combine the two
+    df_mice_pi = pd.concat([df_schedule, df_past_mice])
+    # Format PI names
+    df_mice_pi['PI'] = df_mice_pi['PI'].apply(reformat_PI_names)
+    df_mice_pi.drop_duplicates(inplace=True)
+    
+    # Get unique mouse-PI mapping (concatenate multiple usernames for the same mouse)
+    df_unique_mouse = (
+        df_mice_pi
+        .groupby("subject_id")
+        .agg(PI=("PI", lambda x: ', '.join(x.unique())))  # Concatenate unique usernames
+        .reset_index()
+    )
+    
+    # Save to csv to be uploaded to s3
+    df_unique_mouse.to_csv(behavioral_root + R"\nwb\mice_pi_mapping.csv", index=False)
 
                 
 if __name__ == '__main__':
@@ -244,7 +263,7 @@ if __name__ == '__main__':
     
     # Fetch schedule and parse mice-PI mapping
     fetch_schedule_and_past_mice()
-    parse_mice_pi_mapping()
+    parse_and_save_mice_pi_mapping()
     
     # Copy behavioral folders from remote PCs to local
     sync_behavioral_folders()
