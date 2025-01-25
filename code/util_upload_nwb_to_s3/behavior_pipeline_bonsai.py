@@ -230,7 +230,7 @@ def fetch_schedule_and_past_mice():
     except Exception as e:
         log.warning(f'Error fetching past mice metadata: {str(e)}')
         
-def parse_and_save_mice_pi_mapping():
+def parse_and_save_mouse_pi_mapping():
     '''Parse mice-PI mapping from the schedule'''
     df_schedule = pd.read_csv(
         behavioral_root + R"\nwb\schedule_current.csv")[["Mouse ID", "PI"]].dropna(
@@ -253,8 +253,8 @@ def parse_and_save_mice_pi_mapping():
         .reset_index()
     )
     
-    # Save to csv to be uploaded to s3
-    df_unique_mouse.to_csv(behavioral_root + R"\nwb\mice_pi_mapping.csv", index=False)
+    # Save to json to be uploaded to s3
+    df_unique_mouse.to_json(behavioral_root + R"\nwb\mouse_pi_mapping.json", orient='records')
 
                 
 if __name__ == '__main__':
@@ -263,7 +263,7 @@ if __name__ == '__main__':
     
     # Fetch schedule and parse mice-PI mapping
     fetch_schedule_and_past_mice()
-    parse_and_save_mice_pi_mapping()
+    parse_and_save_mouse_pi_mapping()
     
     # Copy behavioral folders from remote PCs to local
     sync_behavioral_folders()
