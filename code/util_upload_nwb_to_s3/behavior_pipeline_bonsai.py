@@ -14,7 +14,7 @@ import json
 import multiprocessing as mp
 import shutil
 import smartsheet
-
+import pandas as pd
 
 from foraging_gui.TransferToNWB import bonsai_to_nwb
 from raw_data_inventory import get_raw_behavior_sessions_from_multiple_places
@@ -228,14 +228,23 @@ def fetch_schedule_and_past_mice():
         log.info('Download past mice metadata successfully!')
     except Exception as e:
         log.warning(f'Error fetching past mice metadata: {str(e)}')
+        
+def parse_mice_pi_mapping():
+    '''Parse mice-PI mapping from the schedule'''
+    df_schedule = pd.read_csv(
+        behavioral_root + R"\nwb\schedule_current.csv")[["Mouse ID", "PI"]].dropna().drop_duplicates()
+    df_past_mice = pd.read_csv(
+        behavioral_root + R"\nwb\schedule_past_mice.csv")[["Mouse ID", "PI"]].dropna().drop_duplicates()
+    pass
 
                 
 if __name__ == '__main__':
     
     log.info(f'\n\n=====================================================================')
     
-    # Fetch schedule
+    # Fetch schedule and parse mice-PI mapping
     fetch_schedule_and_past_mice()
+    parse_mice_pi_mapping()
     
     # Copy behavioral folders from remote PCs to local
     sync_behavioral_folders()
