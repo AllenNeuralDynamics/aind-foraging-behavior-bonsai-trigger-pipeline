@@ -234,10 +234,14 @@ def parse_and_save_mouse_pi_mapping():
     '''Parse mice-PI mapping from the schedule'''
     df_schedule = pd.read_csv(
         behavioral_root + R"\nwb\schedule_current.csv")[["Mouse ID", "PI"]].dropna(
-    ).drop_duplicates().rename(columns={'Mouse ID': 'subject_id'})
+    ).rename(columns={'Mouse ID': 'subject_id'})
     df_past_mice = pd.read_csv(
         behavioral_root + R"\nwb\schedule_past_mice.csv")[["Mouse ID", "PI"]].dropna(
-    ).drop_duplicates().rename(columns={'Mouse ID': 'subject_id'})
+    ).rename(columns={'Mouse ID': 'subject_id'})
+        
+    # Turn subject_id to text then deal with duplicates
+    df_schedule['subject_id'] = df_schedule['subject_id'].astype(str)
+    df_past_mice['subject_id'] = df_past_mice['subject_id'].astype(str)
         
     # Combine the two
     df_mice_pi = pd.concat([df_schedule, df_past_mice])
