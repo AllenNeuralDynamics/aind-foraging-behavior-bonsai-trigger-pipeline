@@ -265,24 +265,24 @@ if __name__ == '__main__':
     
     log.info(f'\n\n=====================================================================')
     
-    # # Fetch schedule and parse mice-PI mapping
-    # fetch_schedule_and_past_mice()
-    # parse_and_save_mouse_pi_mapping()
+    # Fetch schedule and parse mice-PI mapping
+    fetch_schedule_and_past_mice()
+    parse_and_save_mouse_pi_mapping()
     
-    # # Copy behavioral folders from remote PCs to local
-    # sync_behavioral_folders()
+    # Copy behavioral folders from remote PCs to local
+    sync_behavioral_folders()
     
-    # # Ingest behavior to datajoint
-    # batch_convert_json_to_nwb(behavioral_root, behavioral_root + '\\nwb')
+    # Ingest behavior to datajoint
+    batch_convert_json_to_nwb(behavioral_root, behavioral_root + '\\nwb')
     
-    # # Export raw sessions on VAST to json
-    # get_raw_behavior_sessions_from_multiple_places(behavioral_root + '\\nwb\\raw_sessions_on_VAST.json')
+    # Export raw sessions on VAST to json
+    get_raw_behavior_sessions_from_multiple_places(behavioral_root + '\\nwb\\raw_sessions_on_VAST.json')
     
-    # # Sync with AWS bucket
-    # upload_directory_to_s3(source_dir = R"C:\han_temp_pipeline\nwb", 
-    #                        s3_bucket="aind-behavior-data/foraging_nwb_bonsai", 
-    #                        method='sync'
-    #                        )
+    # Sync with AWS bucket
+    upload_directory_to_s3(source_dir = R"C:\han_temp_pipeline\nwb", 
+                           s3_bucket="aind-behavior-data/foraging_nwb_bonsai", 
+                           method='sync'
+                           )
     # also cp the mouse_pi_mapping.json to processed folder
     upload_directory_to_s3(source_dir = R"C:\han_temp_pipeline\nwb\mouse_pi_mapping.json", 
                            s3_bucket="aind-behavior-data/foraging_nwb_bonsai_processed", 
