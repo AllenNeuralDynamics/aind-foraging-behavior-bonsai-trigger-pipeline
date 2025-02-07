@@ -12,25 +12,28 @@ import glob
 import os
 import json
 import multiprocessing as mp
+import shutil
+import smartsheet
+import pandas as pd
 
 from foraging_gui.TransferToNWB import bonsai_to_nwb
 from raw_data_inventory import get_raw_behavior_sessions_from_multiple_places
+from util import reformat_PI_names
 
 import warnings
 warnings.simplefilter('ignore', FutureWarning)
+
+# Load passcode
+with open(os.path.dirname(os.path.abspath(__file__)) + '\passcode.json') as f:
+    passcode = json.load(f)
 
 #%%
 def get_passcode(rigs):
     ''' Get passcode for remote PCs from json
     '''
-    with open(os.path.dirname(os.path.abspath(__file__)) + '\passcode.json') as f:
-        passcode = json.load(f)
-        
     for rig in rigs:
         if 'user_name' in rig:
             rig['passcode'] = passcode[rig['remote'].split('\\\\')[1].split('\\')[0]]
-                                    
-    
 
 #=============================   Change me!!! ===============================
 # Address of remote training rig PCs
@@ -187,17 +190,84 @@ def batch_convert_json_to_nwb(json_dir, nwb_dir):
              f'{results.count("uncaught_error")} uncaught error\n\n')
     
 
-def upload_directory_to_s3(source_dir, s3_bucket):
+def upload_directory_to_s3(source_dir, s3_bucket, method='sync'):
     # Create the AWS CLI command
-    aws_cli_command = [R'C:\Program Files\Amazon\AWSCLIV2\aws', 's3', 'sync', source_dir, f's3://{s3_bucket}/']
+    aws_cli_command = [R'C:\Program Files\Amazon\AWSCLIV2\aws', 's3', method, source_dir, f's3://{s3_bucket}/']
 
     # Execute the AWS CLI command
     subprocess.run(aws_cli_command, check=True)
     
+def fetch_schedule_and_past_mice():
+    '''
+    Fetch current experiment schedule from AIND scratch, where Alex's code downloads from the smartsheet
+    https://github.com/AllenNeuralDynamics/behavior_communication/blob/main/schedule/download_schedule.py
+    (because I don't have the access to the sheet_id of the current schedule for now)
+    
+    and fetch past mice metadata directly from smartsheet
+    '''
+    # --- Copy current schedule ---
+    try:
+        shutil.copy(R"\\allen\aind\scratch\dynamic_foraging\DynamicForagingSchedule.csv",
+                    behavioral_root + R"\nwb\schedule_current.csv"
+                    )
+        log.info('Copy schedule successfully!')
+    except Exception as e:
+        log.warning(f'Error fetching schedule: {str(e)}')
+        
+    # --- Download past mice metadata ---
+    try:
+        sheet_ID = 5745380507471748   # past mice in behavior
+        download_folder = behavioral_root + R"\nwb"
+        filename = 'schedule_past_mice.csv'
+
+        smart = smartsheet.Smartsheet(access_token=passcode["smart_sheet_token"])
+        smart.Sheets.get_sheet_as_csv(
+            sheet_ID,
+            download_path=download_folder,
+            alternate_file_name=filename
+            )
+        log.info('Download past mice metadata successfully!')
+    except Exception as e:
+        log.warning(f'Error fetching past mice metadata: {str(e)}')
+        
+def parse_and_save_mouse_pi_mapping():
+    '''Parse mice-PI mapping from the schedule'''
+    df_schedule = pd.read_csv(
+        behavioral_root + R"\nwb\schedule_current.csv")[["Mouse ID", "PI"]].dropna(
+    ).rename(columns={'Mouse ID': 'subject_id'})
+    df_past_mice = pd.read_csv(
+        behavioral_root + R"\nwb\schedule_past_mice.csv")[["Mouse ID", "PI"]].dropna(
+    ).rename(columns={'Mouse ID': 'subject_id'})
+        
+    # Turn subject_id to text then deal with duplicates
+    df_schedule['subject_id'] = df_schedule['subject_id'].astype(str)
+    df_past_mice['subject_id'] = df_past_mice['subject_id'].astype(str)
+        
+    # Combine the two
+    df_mice_pi = pd.concat([df_schedule, df_past_mice])
+    # Format PI names
+    df_mice_pi['PI'] = df_mice_pi['PI'].apply(reformat_PI_names)
+    df_mice_pi.drop_duplicates(inplace=True)
+    
+    # Get unique mouse-PI mapping (concatenate multiple usernames for the same mouse)
+    df_unique_mouse = (
+        df_mice_pi
+        .groupby("subject_id")
+        .agg(PI=("PI", lambda x: ', '.join(x.unique())))  # Concatenate unique usernames
+        .reset_index()
+    )
+    
+    # Save to json to be uploaded to s3
+    df_unique_mouse.to_json(behavioral_root + R"\nwb\mouse_pi_mapping.json", orient='records')
+
                 
 if __name__ == '__main__':
     
     log.info(f'\n\n=====================================================================')
+    
+    # Fetch schedule and parse mice-PI mapping
+    fetch_schedule_and_past_mice()
+    parse_and_save_mouse_pi_mapping()
     
     # Copy behavioral folders from remote PCs to local
     sync_behavioral_folders()
@@ -211,4 +281,10 @@ if __name__ == '__main__':
     # Sync with AWS bucket
     upload_directory_to_s3(source_dir = R"C:\han_temp_pipeline\nwb", 
                            s3_bucket="aind-behavior-data/foraging_nwb_bonsai", 
+                           method='sync'
+                           )
+    # also cp the mouse_pi_mapping.json to processed folder
+    upload_directory_to_s3(source_dir = R"C:\han_temp_pipeline\nwb\mouse_pi_mapping.json", 
+                           s3_bucket="aind-behavior-data/foraging_nwb_bonsai_processed", 
+                           method='cp'
                            )
