@@ -190,9 +190,9 @@ def batch_convert_json_to_nwb(json_dir, nwb_dir):
              f'{results.count("uncaught_error")} uncaught error\n\n')
     
 
-def upload_directory_to_s3(source_dir, s3_bucket):
+def upload_directory_to_s3(source_dir, s3_bucket, method='sync'):
     # Create the AWS CLI command
-    aws_cli_command = [R'C:\Program Files\Amazon\AWSCLIV2\aws', 's3', 'sync', source_dir, f's3://{s3_bucket}/']
+    aws_cli_command = [R'C:\Program Files\Amazon\AWSCLIV2\aws', 's3', method, source_dir, f's3://{s3_bucket}/']
 
     # Execute the AWS CLI command
     subprocess.run(aws_cli_command, check=True)
@@ -281,4 +281,10 @@ if __name__ == '__main__':
     # Sync with AWS bucket
     upload_directory_to_s3(source_dir = R"C:\han_temp_pipeline\nwb", 
                            s3_bucket="aind-behavior-data/foraging_nwb_bonsai", 
+                           method='sync'
+                           )
+    # also cp the mouse_pi_mapping.json to processed folder
+    upload_directory_to_s3(source_dir = R"C:\han_temp_pipeline\nwb\mouse_pi_mapping.json", 
+                           s3_bucket="aind-behavior-data/foraging_nwb_bonsai_processed", 
+                           method='cp'
                            )
