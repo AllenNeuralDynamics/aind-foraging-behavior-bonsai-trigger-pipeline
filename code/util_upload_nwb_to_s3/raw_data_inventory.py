@@ -3,6 +3,8 @@ import os
 import glob
 import subprocess
 import json
+import logging
+logger = logging.getLogger(__name__)
 
 from util import get_passcode
 
@@ -50,9 +52,11 @@ def get_raw_behavior_sessions(root_folder, patterns):
 
 
 def get_raw_behavior_sessions_from_multiple_places(json_path="raw_sessions_on_VAST.json"):
+    logger.info("Getting raw behavior sessions from multiple places...")
     matches = []
 
     for host_setting in HOST_SETTINGS:
+        logger.info(f"Getting raw behavior sessions from {host_setting['host']}...")
         host = host_setting["host"]
         user = host_setting["user_name"]
         root_folder = host_setting["root_folder"]

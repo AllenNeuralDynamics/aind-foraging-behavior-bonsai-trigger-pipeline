@@ -191,6 +191,7 @@ def batch_convert_json_to_nwb(json_dir, nwb_dir):
     
 
 def upload_directory_to_s3(source_dir, s3_bucket, method='sync'):
+    log.info(f'Uploading {source_dir} to s3://{s3_bucket}/')
     # Create the AWS CLI command
     aws_cli_command = [R'C:\Program Files\Amazon\AWSCLIV2\aws', 's3', method, source_dir, f's3://{s3_bucket}/']
 
