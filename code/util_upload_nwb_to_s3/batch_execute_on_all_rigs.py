@@ -56,7 +56,8 @@ if __name__ == '__main__':
         print(f"\n\n=============== {rig} ({pc_name}) ===============")
         cmds = [
             # Share folder
-            # fR"net share behavior_data=C:\behavior_data /grant:svc_aind_behavior,FULL",
+            fR"net share behavior_data /delete",
+            fR"net share behavior_data=C:\behavior_data /grant:Everyone,READ /grant:svc_aind_behavior,FULL",
             
             # Update aind-auto-train package
             f'call "{conda_path}" activate {env_name}',
