@@ -59,7 +59,12 @@ rigs.extend(
     [
         # Ephys rigs
         {'local': fR'323_EPHYS_1', 
-        'remote': fR'\\allen\aind\scratch\ephys_rig_behavior_transfer\323_EPHYS1', 
+        'remote': fR'\\W10DT713669\behavior_data\323_EPHYS1', 
+        'user_name': 'svc_aind_ephys',
+        },
+        
+        {'local': fR'323_EPHYS_1', 
+         'remote': fR'\\allen\aind\scratch\ephys_rig_behavior_transfer\323_EPHYS1', 
         },
         
         {'local': fR'323_EPHYS_3', 
@@ -150,12 +155,12 @@ def convert_one_json_to_nwb(filepath, nwb_dir):
 
     # Skip if name start with 0
     if filename.startswith('0'):
-        log.info(f'Skipped {filename}: file name start with 0')
+        #log.info(f'Skipped {filename}: file name start with 0')
         return 'mouse_id_start_with_0'
     
     # Skip if name include "behavior_session_model"
     if 'behavior_session_model' in filename:
-        log.info(f'Skipped {filename}: file name include "behavior_session_model"')
+        # log.info(f'Skipped {filename}: file name include "behavior_session_model"')
         return 'behavior_session_model_in_json_name'
     
     # Check if corresponding .nwb file exists
