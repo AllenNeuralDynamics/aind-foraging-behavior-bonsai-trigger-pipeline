@@ -72,7 +72,7 @@ rigs.extend(
         },
         
         {'local': fR'323_EPHYS_3',
-         'remote': fR'\\W10DT713883\behavior_data\323_EPHYS3',
+         'remote': fR'\\W10DT713883\behavior_data',
          'user_name': 'svc_aind_ephys',
         },
         
